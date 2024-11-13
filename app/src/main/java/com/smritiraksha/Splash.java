@@ -1,5 +1,6 @@
 package com.smritiraksha;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
