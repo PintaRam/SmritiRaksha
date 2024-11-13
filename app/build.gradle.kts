@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId = "com.smritiraksha"
-        minSdk = 19
+        minSdk = 21
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -40,4 +40,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("com.airbnb.android:lottie:6.4.1")
+    implementation ("com.google.android.material:material:1.10.0")
 }
