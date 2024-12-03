@@ -76,7 +76,7 @@
         app:cornerRadius="8dp"
         app:backgroundTint="@color/blue_green" />
 
-    <!-- Login Text -->
+    <!-- Login Text-->
     <TextView
         android:id="@+id/loginTextView"
         android:layout_width="wrap_content"
