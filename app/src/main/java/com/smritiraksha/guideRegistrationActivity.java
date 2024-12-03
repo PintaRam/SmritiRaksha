@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 
-public class GuideRegistrationActivity extends AppCompatActivity {
+public class guideRegistrationActivity extends AppCompatActivity {
 
     private TextInputEditText guideNameEditText, guideIdEditText, guideEmailEditText, patientIdEditText, patientNameEditText;
 
@@ -16,8 +16,6 @@ public class GuideRegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide_registration);
-
-        // Initialize the input fields
         guideNameEditText = findViewById(R.id.guideNameEditText);
         guideIdEditText = findViewById(R.id.guideIdEditText);
         guideEmailEditText = findViewById(R.id.guideEmailEditText);
@@ -29,7 +27,7 @@ public class GuideRegistrationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (validateInputs()) {
                     // Proceed with registration or next steps
-                    Toast.makeText(GuideRegistrationActivity.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(guideRegistrationActivity.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
