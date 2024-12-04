@@ -1,4 +1,5 @@
 package com.smritiraksha;
+
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -6,12 +7,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.button.MaterialButton;
+
 public class patient extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.patient);
+        setContentView(R.layout.patient);  // Ensure layout name matches
 
         // Input Fields
         TextInputEditText etPatientName = findViewById(R.id.et_patient_name);
@@ -47,11 +49,57 @@ public class patient extends AppCompatActivity {
             String guideID = actGuideID.getText().toString();
             String guideName = actGuideName.getText().toString();
 
-            if (patientName.isEmpty() || patientID.isEmpty() || contact.isEmpty() || sex.isEmpty() || guideID.isEmpty() || guideName.isEmpty()) {
-                Toast.makeText(patient.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            boolean isValid = true;
+
+            // Validate Patient Name
+            if (patientName.isEmpty()) {
+                etPatientName.setError("Patient Name is required");
+                isValid = false;
             } else {
-                // TODO: Handle form submission
+                etPatientName.setError(null); // Clear error
+            }
+
+            // Validate Patient ID
+            if (patientID.isEmpty()) {
+                etPatientID.setError("Patient ID is required");
+                isValid = false;
+            } else {
+                etPatientID.setError(null); // Clear error
+            }
+
+            // Validate Contact
+            if (contact.isEmpty()) {
+                etContact.setError("Contact is required");
+                isValid = false;
+            } else {
+                etContact.setError(null); // Clear error
+            }
+
+            // Validate Gender (Dropdown)
+            if (sex.isEmpty()) {
+                Toast.makeText(patient.this, "Gender is required", Toast.LENGTH_SHORT).show();
+                isValid = false;
+            }
+
+            // Validate Guide ID (Dropdown)
+            if (guideID.isEmpty()) {
+                Toast.makeText(patient.this, "Guide ID is required", Toast.LENGTH_SHORT).show();
+                isValid = false;
+            }
+
+            // Validate Guide Name (Dropdown)
+            if (guideName.isEmpty()) {
+                Toast.makeText(patient.this, "Guide Name is required", Toast.LENGTH_SHORT).show();
+                isValid = false;
+            }
+
+            // Check if all fields are valid
+            if (isValid) {
+                // Success: Handle form submission
                 Toast.makeText(patient.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+            } else {
+                // Failure: Notify user to fill required fields
+                Toast.makeText(patient.this, "Please fill all required fields", Toast.LENGTH_SHORT).show();
             }
         });
     }
