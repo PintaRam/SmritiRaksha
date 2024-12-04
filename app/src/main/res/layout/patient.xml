@@ -1,43 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/purple_50"
+    android:orientation="vertical"
     android:padding="16dp">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_animation"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        app:lottie_rawRes="@raw/ecg"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:baselineAligned="false"
         android:padding="8dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp"
+            android:backgroundTint="@color/white"
             android:padding="16dp"
-            android:backgroundTint="@color/white">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp">
+                android:padding="16dp">
 
                 <!-- Title -->
                 <TextView
                     android:id="@+id/tv_form_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="24dp"
                     android:text="Patient Registration"
                     android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="24dp" />
+                    android:textColor="@color/black" />
 
                 <!-- Patient Name -->
                 <com.google.android.material.textfield.TextInputLayout
@@ -56,9 +67,9 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:hint="Patient ID"
-                    app:boxBackgroundMode="outline"
-                    android:layout_marginTop="8dp">
+                    app:boxBackgroundMode="outline">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_patient_id"
@@ -70,24 +81,24 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:hint="Contact"
-                    app:boxBackgroundMode="outline"
-                    android:layout_marginTop="8dp">
+                    app:boxBackgroundMode="outline">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_contact"
-                        android:inputType="phone"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:inputType="phone" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Sex Dropdown -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:hint="Gender"
-                    app:boxBackgroundMode="outline"
-                    android:layout_marginTop="8dp">
+                    app:boxBackgroundMode="outline">
 
                     <AutoCompleteTextView
                         android:id="@+id/act_sex"
@@ -99,9 +110,9 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:hint="Guide ID"
-                    app:boxBackgroundMode="outline"
-                    android:layout_marginTop="8dp">
+                    app:boxBackgroundMode="outline">
 
                     <AutoCompleteTextView
                         android:id="@+id/act_guide_id"
@@ -113,9 +124,9 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:hint="Guide Name"
-                    app:boxBackgroundMode="outline"
-                    android:layout_marginTop="8dp">
+                    app:boxBackgroundMode="outline">
 
                     <AutoCompleteTextView
                         android:id="@+id/act_guide_name"
