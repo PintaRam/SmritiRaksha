@@ -21,6 +21,7 @@
 
         <ImageView
             android:id="@+id/imageView"
+            android:layout_marginRight="50sp"
             android:layout_width="match_parent"
             android:layout_height="562dp"
             android:layerType="software"
@@ -39,6 +40,7 @@
             app:layout_constraintVertical_bias="0.808"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
+            android:layout_marginRight="50sp"
             app:lottie_rawRes="@raw/splash_loading" />
 
     </LinearLayout>
