@@ -15,6 +15,7 @@
         android:theme="@style/Theme.SmritiRaksha"
         tools:targetApi="31">
         <activity
+            android:name=".guideRegistration"
             android:name=".MainActivity"
             android:exported="false" />
         <activity
