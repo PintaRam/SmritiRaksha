@@ -1,28 +1,31 @@
 package com.smritiraksha;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.textfield.TextInputEditText;
 
 public class guideRegistrationActivity extends AppCompatActivity {
 
-    private TextInputEditText guideNameEditText, guideIdEditText, guideEmailEditText, patientIdEditText, patientNameEditText;
+    private TextInputEditText etGuideName, etGuideId, etGuideEmail, etGuideContact, etAssociatedPatientId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide_registration);
-        guideNameEditText = findViewById(R.id.guideNameEditText);
-        guideIdEditText = findViewById(R.id.guideIdEditText);
-        guideEmailEditText = findViewById(R.id.guideEmailEditText);
-        patientIdEditText = findViewById(R.id.patientIdEditText);
-        patientNameEditText = findViewById(R.id.patientNameEditText);
 
-        findViewById(R.id.registerGuideButton).setOnClickListener(new View.OnClickListener() {
+        // Bind views with IDs from the layout
+        etGuideName = findViewById(R.id.et_guide_name);
+        etGuideId = findViewById(R.id.et_guide_id);
+        etGuideEmail = findViewById(R.id.et_guide_email);
+        etGuideContact = findViewById(R.id.et_guide_contact);
+        etAssociatedPatientId = findViewById(R.id.et_associated_patient_id);
+
+        // Set click listener for the registration button
+        findViewById(R.id.btn_guide_submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validateInputs()) {
@@ -33,42 +36,43 @@ public class guideRegistrationActivity extends AppCompatActivity {
         });
     }
 
+    // Validate all inputs
     private boolean validateInputs() {
         // Get input values
-        String guideName = guideNameEditText.getText().toString().trim();
-        String guideId = guideIdEditText.getText().toString().trim();
-        String guideEmail = guideEmailEditText.getText().toString().trim();
-        String patientId = patientIdEditText.getText().toString().trim();
-        String patientName = patientNameEditText.getText().toString().trim();
+        String guideName = etGuideName.getText().toString().trim();
+        String guideId = etGuideId.getText().toString().trim();
+        String guideEmail = etGuideEmail.getText().toString().trim();
+        String guideContact = etGuideContact.getText().toString().trim();
+        String associatedPatientId = etAssociatedPatientId.getText().toString().trim();
 
-        // Check for empty fields
+        // Check for empty fields and apply specific validation rules
         if (TextUtils.isEmpty(guideName)) {
-            guideNameEditText.setError("Guide Name is required");
-            guideNameEditText.requestFocus();
+            etGuideName.setError("Guide Name is required");
+            etGuideName.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(guideId)) {
-            guideIdEditText.setError("Guide ID is required");
-            guideIdEditText.requestFocus();
+            etGuideId.setError("Guide ID is required");
+            etGuideId.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(guideEmail) || !Patterns.EMAIL_ADDRESS.matcher(guideEmail).matches()) {
-            guideEmailEditText.setError("Enter a valid email");
-            guideEmailEditText.requestFocus();
+            etGuideEmail.setError("Enter a valid email");
+            etGuideEmail.requestFocus();
             return false;
         }
 
-        if (TextUtils.isEmpty(patientId)) {
-            patientIdEditText.setError("Patient ID is required");
-            patientIdEditText.requestFocus();
+        if (TextUtils.isEmpty(guideContact) || !guideContact.matches("^\\d{10}$")) {
+            etGuideContact.setError("Enter a valid 10-digit contact number");
+            etGuideContact.requestFocus();
             return false;
         }
 
-        if (TextUtils.isEmpty(patientName)) {
-            patientNameEditText.setError("Patient Name is required");
-            patientNameEditText.requestFocus();
+        if (TextUtils.isEmpty(associatedPatientId)) {
+            etAssociatedPatientId.setError("Associated Patient ID is required");
+            etAssociatedPatientId.requestFocus();
             return false;
         }
 

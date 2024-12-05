@@ -119,7 +119,7 @@ public class Registration extends AppCompatActivity {
                             }
                         } else {
                             Toast.makeText(Registration.this, message, Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(Registration.this, MainActivity.class));
+                            startActivity(new Intent(Registration.this, guideRegistrationActivity.class));
                             finish();
                         }
                     } catch (JSONException e) {
