@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Registration extends AppCompatActivity {
+
     private TextInputEditText emailEditText, passwordEditText, confirmPasswordEditText;
     private MaterialAutoCompleteTextView roleAutoCompleteTextView;
     private ProgressDialog progressDialog;
@@ -81,23 +82,36 @@ public class Registration extends AppCompatActivity {
         String role = roleAutoCompleteTextView.getText().toString().trim();
 
         // Validation
-        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword) || TextUtils.isEmpty(role)) {
-            Toast.makeText(this, "All fields are required!", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(email)) {
+            emailEditText.setError("Email is required!");
             return;
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Enter a valid email!", Toast.LENGTH_SHORT).show();
+            emailEditText.setError("Enter a valid email!");
+            return;
+        }
+        if (TextUtils.isEmpty(password)) {
+            passwordEditText.setError("Password is required!");
             return;
         }
         if (password.length() < 6) {
-            Toast.makeText(this, "Password must be at least 6 characters!", Toast.LENGTH_SHORT).show();
+            passwordEditText.setError("Password must be at least 6 characters!");
+            return;
+        }
+        if (TextUtils.isEmpty(confirmPassword)) {
+            confirmPasswordEditText.setError("Please confirm your password!");
             return;
         }
         if (!password.equals(confirmPassword)) {
-            Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
+            confirmPasswordEditText.setError("Passwords do not match!");
+            return;
+        }
+        if (TextUtils.isEmpty(role)) {
+            roleAutoCompleteTextView.setError("Role is required!");
             return;
         }
 
+        // Proceed with registration
         progressDialog.show();
 
         // Register user via Volley
@@ -112,19 +126,13 @@ public class Registration extends AppCompatActivity {
                         String message = jsonObject.getString("message");
 
                         if (error) {
-                            if (message.equals("Email already exists. Please use a different email.")) {
-                                Toast.makeText(Registration.this, "This email is already registered.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(Registration.this, message, Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
                             Toast.makeText(Registration.this, message, Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(Registration.this, guideRegistrationActivity.class));
-                            finish();
+                        } else {
+                            Toast.makeText(Registration.this, "Registration successful!", Toast.LENGTH_SHORT).show();
+                            navigateToRoleActivity(role);
                         }
                     } catch (JSONException e) {
                         Log.e("JSONException", e.getMessage());
-                        Log.d("ServerResponse", response);
                         Toast.makeText(Registration.this, "Error parsing server response.", Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -145,6 +153,27 @@ public class Registration extends AppCompatActivity {
         };
 
         Volley.newRequestQueue(this).add(stringRequest);
+    }
+
+
+    private void navigateToRoleActivity(String role) {
+        Intent intent;
+        switch (role.toLowerCase()) {
+            case "doctor":
+                intent = new Intent(Registration.this, Login.class);
+                break;
+            case "caretaker":
+                intent = new Intent(Registration.this, guideRegistrationActivity.class);
+                break;
+            case "patient":
+                intent = new Intent(Registration.this, patient.class);
+                break;
+            default:
+                Toast.makeText(this, "Unknown role. Unable to navigate.", Toast.LENGTH_SHORT).show();
+                return;
+        }
+        startActivity(intent);
+        finish();
     }
 
     private void enhancedButtonAnimation(View view) {

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:padding="20dp"
     tools:context=".Login">
 
-    <!-- Lottie Animation -->
+    <!-- Animation View -->
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieAnimationView"
         android:layout_width="match_parent"
@@ -23,8 +24,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/roleInputLayout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
         android:hint="Select Role"
         app:boxBackgroundMode="outline"
         app:layout_constraintTop_toBottomOf="@id/lottieAnimationView"
@@ -37,8 +38,8 @@
             android:layout_height="50dp"
             android:hint="Select Role"
             android:inputType="text"
-            android:paddingStart="15dp"
             android:focusable="true"
+            android:paddingStart="15dp"
             android:focusableInTouchMode="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,6 +70,7 @@
         android:layout_marginTop="16dp"
         android:hint="Password"
         app:boxBackgroundMode="outline"
+        app:endIconMode="password_toggle"
         app:layout_constraintTop_toBottomOf="@id/emailInputLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -80,40 +82,28 @@
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Login Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/loginButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Login"
-        android:textSize="20sp"
-        app:cornerRadius="8dp"
-        app:layout_constraintTop_toBottomOf="@id/passwordInputLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Register Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/registerButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Register"
+        android:layout_marginTop="24dp"
+        android:text="Login"
         android:textSize="20sp"
         app:cornerRadius="8dp"
         app:backgroundTint="@color/blue_green"
-        app:layout_constraintTop_toBottomOf="@id/loginButton"
+        app:layout_constraintTop_toBottomOf="@id/passwordInputLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Sign-up Text -->
+    <!-- Login Text -->
     <TextView
-        android:id="@+id/signUpTextView"
+        android:id="@+id/loginTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Don't have an account? Sign Up"
+        android:text="Don't have an account? Register here"
         android:textColor="@color/blue_green"
         android:textSize="16sp"
         android:clickable="true"
