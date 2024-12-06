@@ -14,14 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmritiRaksha"
         tools:targetApi="31">
+
         <activity
             android:name=".Doctor_registration"
-            android:exported="false" >
-        </activity>
+            android:exported="false" />
+
       
-        <activity>
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
+
         <activity
             android:name=".guideRegistrationActivity"
             android:exported="false" />

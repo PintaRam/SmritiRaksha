@@ -160,7 +160,7 @@ public class Registration extends AppCompatActivity {
         Intent intent;
         switch (role.toLowerCase()) {
             case "doctor":
-                intent = new Intent(Registration.this, Login.class);
+                intent = new Intent(Registration.this, Doctor_registration.class);
                 break;
             case "caretaker":
                 intent = new Intent(Registration.this, guideRegistrationActivity.class);
