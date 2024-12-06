@@ -116,7 +116,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Login Text -->
+    <!-- Login Text-->
     <TextView
         android:id="@+id/loginTextView"
         android:layout_width="wrap_content"
