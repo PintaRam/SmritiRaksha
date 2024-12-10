@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -15,25 +14,33 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-
 public class Doctor_registration extends AppCompatActivity {
 
     private TextInputLayout doctorNameLayout, doctorMobileLayout, patientIdLayout, guideIdLayout;
     private TextInputEditText doctorNameEditText, doctorMobileEditText, patientIdEditText, guideIdEditText;
     private MaterialButton confirmButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_doctor_registration);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+
+        // Apply window insets for edge-to-edge layout
+        View rootLayout = findViewById(android.R.id.content); // Use the root layout of the activity
+        ViewCompat.setOnApplyWindowInsetsListener(rootLayout, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        // Initialize views
+        initializeViews();
 
-        // Initialize TextInputLayouts and TextInputEditTexts
+        // Set click listener on Confirm button
+        confirmButton.setOnClickListener(v -> validateInputs());
+    }
+
+    private void initializeViews() {
         doctorNameLayout = findViewById(R.id.doctorNameLayout);
         doctorNameEditText = findViewById(R.id.doctorNameEditText);
 
@@ -47,16 +54,7 @@ public class Doctor_registration extends AppCompatActivity {
         guideIdEditText = findViewById(R.id.guideIdEditText);
 
         confirmButton = findViewById(R.id.confirmButton);
-
-        // Set click listener on Confirm button
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validateInputs();
-            }
-        });
     }
-
 
     private void validateInputs() {
         boolean isValid = true;
@@ -81,6 +79,7 @@ public class Doctor_registration extends AppCompatActivity {
         } else {
             doctorMobileLayout.setError(null);
         }
+
         // Validate Patient ID
         String patientId = patientIdEditText.getText().toString().trim();
         if (TextUtils.isEmpty(patientId)) {
