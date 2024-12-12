@@ -19,7 +19,6 @@
             android:name=".Doctor_registration"
             android:exported="false" />
 
-      
         <activity
             android:name=".MainActivity"
             android:exported="false" />
