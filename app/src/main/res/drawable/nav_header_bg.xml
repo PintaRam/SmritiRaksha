@@ -1,0 +1,4 @@
+<!-- Save this as res/drawable/nav_header_bg.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#3498db" /> <!-- Change this to any color you want -->
+</shape>
