@@ -32,7 +32,7 @@ public class patient extends AppCompatActivity {
     private ArrayList<String> guideIDs = new ArrayList<>();
     private ArrayList<String> guideNames = new ArrayList<>();
     private String selectedGuideName;
-    private final String email = "krishna@gmail.com";
+    private final String email = "pintu.borana20@gmail.com";
     private static final String TAG = "PatientActivity";
 
     @Override
@@ -194,6 +194,7 @@ public class patient extends AppCompatActivity {
                         if (error) {
                             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                         } else {
+                            Log.e("Server Response", "Response: " + response);
                             Toast.makeText(this, "Patient registered successfully!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(patient.this, MainActivity.class);
                             startActivity(intent);
