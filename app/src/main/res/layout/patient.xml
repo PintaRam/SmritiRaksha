@@ -16,12 +16,13 @@
         android:layout_gravity="center"
         app:lottie_rawRes="@raw/ecg"
         app:lottie_autoPlay="true"
-        app:lottie_loop="true" />
+        app:lottie_loop="true"
+        android:contentDescription="Animated heart rate monitor" />
 
     <!-- Form Container -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -53,7 +54,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Patient Name"
+                    android:hint="Enter Patient Name"
                     app:boxBackgroundMode="outline"
                     android:layout_marginBottom="12dp">
 
@@ -61,14 +62,16 @@
                         android:id="@+id/et_patient_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:inputType="textPersonName"
+                        android:contentDescription="Patient name input" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Patient ID -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Patient ID"
+                    android:hint="Enter Patient ID"
                     app:boxBackgroundMode="outline"
                     android:layout_marginBottom="12dp">
 
@@ -76,82 +79,128 @@
                         android:id="@+id/et_patient_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:inputType="text"
+                        android:contentDescription="Patient ID input" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Contact -->
+                <!-- Contact Number -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Contact"
+                    android:hint="Contact Number"
                     app:boxBackgroundMode="outline"
                     android:layout_marginBottom="12dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_contact"
-                        android:inputType="phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:inputType="phone"
+                        android:contentDescription="Contact number input" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Gender Dropdown -->
-                <com.google.android.material.textfield.TextInputLayout
+                <!-- Age and Gender Row -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Gender"
-                    app:boxBackgroundMode="outline"
-                    android:layout_marginBottom="12dp">
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp"
+                    android:weightSum="2">
 
-                    <AutoCompleteTextView
-                        android:id="@+id/act_sex"
-                        android:layout_width="match_parent"
+                    <!-- Age -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:textSize="16sp" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_weight="1"
+                        android:hint="Enter Age"
+                        app:boxBackgroundMode="outline"
+                        android:layout_marginEnd="8dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_age"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="Age input"
+                            android:inputType="number"
+                            android:textSize="16sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Gender Dropdown -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Select Gender"
+                        app:boxBackgroundMode="outline">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/act_gender"
+                            android:layout_width="120dp"
+                            android:layout_height="55dp"
+                            android:completionThreshold="1"
+                            android:contentDescription="Gender selection"
+                            android:inputType="none"
+                            android:paddingLeft="10dp"
+                            android:textSize="16sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
 
                 <!-- Guide ID Dropdown -->
+                <!-- Guide ID -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Guide ID"
+                    android:hint="Select Guide ID"
                     app:boxBackgroundMode="outline"
                     android:layout_marginBottom="12dp">
 
-                    <AutoCompleteTextView
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/act_guide_id"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="12dp"
+                        android:layout_height="50dp"
+                        android:completionThreshold="1"
+                        android:contentDescription="Guide ID selection"
+                        android:inputType="none"
+                        android:paddingLeft="10dp"
                         android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Guide Name Dropdown -->
+                <!-- Guide Name -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Guide Name"
+                    android:hint="Select Guide Name"
                     app:boxBackgroundMode="outline"
                     android:layout_marginBottom="16dp">
 
-                    <AutoCompleteTextView
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/act_guide_name"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="12dp"
+                        android:layout_height="55dp"
+                        android:completionThreshold="1"
+                        android:contentDescription="Guide name selection"
+                        android:inputType="none"
+                        android:paddingLeft="10dp"
+                        android:clickable="false"
                         android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
+
 
                 <!-- Submit Button -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_submit"
-                    android:layout_width="match_parent"
+                    android:layout_width="174dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:contentDescription="Submit registration button"
                     android:text="Submit"
-                    android:textSize="16sp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="35dp"
                     android:textColor="@color/white"
+                    android:textSize="16sp"
                     app:backgroundTint="@color/purple_500" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
