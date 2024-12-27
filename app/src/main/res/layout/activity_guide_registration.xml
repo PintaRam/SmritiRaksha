@@ -22,7 +22,8 @@
     <!-- Scrollable Content -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -43,11 +44,11 @@
                     android:id="@+id/tv_guide_form_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="24dp"
                     android:text="Guide Registration"
                     android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="24dp" />
+                    android:textColor="@color/black" />
 
                 <!-- Guide Name -->
                 <com.google.android.material.textfield.TextInputLayout
@@ -76,19 +77,35 @@
                         android:layout_height="wrap_content" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Guide Email -->
+                <!-- Gender Dropdown -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Guide Email"
+                    android:hint="Gender"
+                    app:boxBackgroundMode="outline"
+                    android:layout_marginTop="8dp">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/et_guide_gender"
+                        android:layout_width="match_parent"
+                        android:layout_height="53dp"
+                        android:paddingLeft="15dp"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Address -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Address"
                     app:boxBackgroundMode="outline"
                     android:layout_marginTop="8dp">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_guide_email"
+                        android:id="@+id/et_guide_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress" />
+                        android:inputType="textPostalAddress" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Contact Number -->
@@ -104,20 +121,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="phone" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Associated Patient ID -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Associated Patient ID"
-                    app:boxBackgroundMode="outline"
-                    android:layout_marginTop="8dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_associated_patient_id"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Submit Button -->

@@ -1,14 +1,17 @@
 package com.smritiraksha;
 
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,34 +23,46 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Fix: Use androidx.appcompat.widget.Toolbar
+        // Toolbar setup
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Drawer Layout setup
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.navigation_view);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        // Profile button toggles the drawer
+        ImageButton profileButton = findViewById(R.id.btn_profile);
+        profileButton.setOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
 
-        // Default fragment (Dashboard)
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new DashboardFragment())
-                    .commit();
-            navigationView.setCheckedItem(R.id.nav_dashboard);
-        }
-
-        // Handle Navigation Drawer Item Clicks
+        // Handle navigation view item clicks using if-else
         navigationView.setNavigationItemSelectedListener(item -> {
-            Fragment selectedFragment = null;
+            if (item.getItemId() == R.id.nav_profile_settings) {
+                // Handle Profile Settings item click
+                loadFragment(new ProfileFragment());
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+            return false;
+        });
 
-            // Replaced switch-case with if-else
-            if (item.getItemId() == R.id.nav_profile) {
-                selectedFragment = new ProfileFragment();
-            } else if (item.getItemId() == R.id.nav_tracking) {
+        // Bottom Navigation setup
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        bottomNavigation.setOnNavigationItemSelectedListener(item -> {
+            for (int i = 0; i < bottomNavigation.getChildCount(); i++) {
+                View view = bottomNavigation.getChildAt(i);
+                view.animate().scaleX(1.0f).scaleY(1.0f).translationY(0).setDuration(200).start();
+            }
+
+            // Animate clicked item
+            View selectedView = bottomNavigation.findViewById(item.getItemId());
+            if (selectedView != null) {
+                selectedView.animate().scaleX(1.2f).scaleY(1.2f).translationY(-10).setDuration(200).start();
+            }
+
+            // Load the correct fragment
+            Fragment selectedFragment = null;
+            if (item.getItemId() == R.id.nav_tracking) {
                 selectedFragment = new TrackingFragment();
             } else if (item.getItemId() == R.id.nav_reminder) {
                 selectedFragment = new MedicalReminderFragment();
@@ -58,14 +73,24 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (selectedFragment != null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, selectedFragment)
-                        .commit();
+                loadFragment(selectedFragment);
             }
-
-            drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
+
+
+
+        // Default fragment: Dashboard
+        if (savedInstanceState == null) {
+            bottomNavigation.setSelectedItemId(R.id.nav_dashboard);
+            loadFragment(new DashboardFragment());
+        }
+    }
+
+    private void loadFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
     }
 
     @Override
