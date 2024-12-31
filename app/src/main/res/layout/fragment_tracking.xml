@@ -22,7 +22,34 @@
             android:drawablePadding="8dp"
             android:inputType="text"
             android:background="@drawable/search_box_border"
-            android:layout_margin="8dp" />
+            android:layout_margin="6dp" />
+
+        <EditText
+            android:id="@+id/source_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Source"
+            android:padding="12dp"
+            android:layout_margin="4dp"
+            android:drawableStart="@drawable/ic_location"
+            android:drawablePadding="8dp"
+            android:inputType="text"
+            android:background="@drawable/search_box_border"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/destination_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Destination"
+            android:padding="12dp"
+            android:layout_margin="4dp"
+            android:drawableStart="@drawable/ic_location"
+            android:background="@drawable/search_box_border"
+            android:drawablePadding="8dp"
+            android:inputType="text"
+            android:visibility="gone"
+            android:layout_marginTop="8dp" />
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/map"
