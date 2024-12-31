@@ -1,28 +1,36 @@
 package com.smritiraksha;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link TrackingFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A Fragment that displays a map with the ability to create journeys.
  */
-public class TrackingFragment extends Fragment {
+public class TrackingFragment extends Fragment implements OnMapReadyCallback {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private MapView mapView;
+    private GoogleMap googleMap;
+    private EditText searchBar;
 
     public TrackingFragment() {
         // Required empty public constructor
@@ -36,7 +44,6 @@ public class TrackingFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment TrackingFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static TrackingFragment newInstance(String param1, String param2) {
         TrackingFragment fragment = new TrackingFragment();
         Bundle args = new Bundle();
@@ -55,10 +62,61 @@ public class TrackingFragment extends Fragment {
         }
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tracking, container, false);
+        View view = inflater.inflate(R.layout.fragment_tracking, container, false);
+
+        // Initialize search bar
+        searchBar = view.findViewById(R.id.search_bar);
+
+        // Initialize MapView
+        mapView = view.findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+
+        // Floating Action Button
+        FloatingActionButton fab = view.findViewById(R.id.fab_create_journey);
+        fab.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Choose source and destination", Toast.LENGTH_SHORT).show();
+            // Implement journey creation logic here
+        });
+
+        return view;
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap map) {
+        googleMap = map;
+
+        // Add marker for the user's current location (example coordinates)
+        LatLng currentLocation = new LatLng(-34, 151); // Replace with dynamic location
+        googleMap.addMarker(new MarkerOptions().position(currentLocation).title("Current Location"));
+        googleMap.moveCamera(com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
     }
 }
