@@ -183,6 +183,45 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
             }
         };
 
+        searchBar.addTextChangedListener(new TextWatcher() {
+            private android.os.Handler handler = new android.os.Handler();
+            private Runnable runnable;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No operation
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String searchText = searchBar.getText().toString().trim();
+
+                if (runnable != null) {
+                    handler.removeCallbacks(runnable);
+                }
+
+                runnable = () -> {
+                    if (!searchText.isEmpty()) {
+                        LatLng searchLocation = getLatLngFromAddress(searchText);
+                        if (searchLocation != null) {
+                            updateMapWithMarker(searchLocation, "Search: " + searchText);
+                        } else {
+                            Toast.makeText(getContext(), "Location not found: " + searchText, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                };
+
+                // Execute the search with a 500ms delay
+                handler.postDelayed(runnable, 500);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // No operation
+            }
+        });
+
+
         return view;
     }
 
@@ -315,7 +354,13 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
             }
         }
     }
-
+    private void updateMapWithMarker(LatLng location, String title) {
+        if (googleMap != null) {
+            googleMap.clear(); // Clear existing markers
+            googleMap.addMarker(new MarkerOptions().position(location).title(title));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 12));
+        }
+    }
     @Override
     public void onRouteCancelled() {
 
