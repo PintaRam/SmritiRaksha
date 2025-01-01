@@ -136,7 +136,7 @@ public class DashboardFragment extends Fragment implements SensorEventListener {
         } else if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
             // Step Counter Sensor event
             stepsWalked = (int) event.values[0]; // value is the cumulative step count
-            stepsTextView.setText("Steps Walked: " + stepsWalked);
+            stepsTextView.setText("   Steps Walked:\n" + stepsWalked);
         }
     }
 
