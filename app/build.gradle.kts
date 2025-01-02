@@ -51,4 +51,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.android.volley:volley:1.2.1")
     implementation ("com.github.dangiashish:Google-Direction-Api:1.6")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+
 }
