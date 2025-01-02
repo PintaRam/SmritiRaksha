@@ -242,6 +242,7 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
             Toast.makeText(getContext(), "Unable to get location", Toast.LENGTH_LONG).show();
             return;
         }
+
         RouteDrawing routeDrawing = new RouteDrawing.Builder()
                 .context(getContext())
                 .travelMode(AbstractRouting.TravelMode.DRIVING)
@@ -250,6 +251,8 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
                 .waypoints(start, end)
                 .build();
         routeDrawing.execute();
+        Log.d("Start Location",start.toString());
+        Log.d("End Location",end.toString());
     }
 
     @Override
@@ -264,29 +267,28 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
 
     @Override
     public void onRouteSuccess(ArrayList<RouteInfoModel> routeInfoModelArrayList, int routeIndexing) {
-        if (polylines != null) {
-            for (Polyline polyline : polylines) {
-                polyline.remove();
+        if (routeInfoModelArrayList != null && !routeInfoModelArrayList.isEmpty()) {
+            List<LatLng> points = routeInfoModelArrayList.get(routeIndexing).getPoints();
+            if (points != null) {
+                googleMap.clear();
+                PolylineOptions polylineOptions = new PolylineOptions()
+                        .color(Color.BLUE)
+                        .width(10)
+                        .addAll(points);
+                googleMap.addPolyline(polylineOptions);
+
+                // Adjust the camera to show the entire route
+                LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+                for (LatLng point : points) {
+                    boundsBuilder.include(point);
+                }
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 100));
+                Toast.makeText(getContext(), "Route Created Successfully!!", Toast.LENGTH_SHORT).show();
             }
-            polylines.clear();
-        }
-        PolylineOptions polylineOptions = new PolylineOptions()
-                .color(Color.BLACK)
-                .width(12)
-                .startCap(new RoundCap())
-                .endCap(new RoundCap());
-        List<LatLng> routePoints = routeInfoModelArrayList.get(routeIndexing).getPoints();
-        polylineOptions.addAll(routeInfoModelArrayList.get(routeIndexing).getPoints());
-        polylines.add(googleMap.addPolyline(polylineOptions));
-
-        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
-        for (LatLng point : routePoints) {
-            boundsBuilder.include(point);
+        } else {
+            Toast.makeText(getContext(), "Failed to fetch route.", Toast.LENGTH_SHORT).show();
         }
 
-        // Adjust the camera to include the full route
-        LatLngBounds bounds = boundsBuilder.build();
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
     }
 
     private void updateMapWithMarker(LatLng location, String title) {
