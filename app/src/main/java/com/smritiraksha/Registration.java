@@ -160,7 +160,7 @@ public class Registration extends AppCompatActivity {
         Intent intent;
         switch (role.toLowerCase()) {
             case "doctor":
-                intent = new Intent(Registration.this, Doctor_registration.class);
+                intent = new Intent(Registration.this, Login.class);
                 break;
             case "caretaker":
                 intent = new Intent(Registration.this, guideRegistrationActivity.class);
@@ -183,5 +183,5 @@ public class Registration extends AppCompatActivity {
         animatorSet.playTogether(scaleX, scaleY);
         animatorSet.setDuration(300);
         animatorSet.start();
-    }
+}
 }
