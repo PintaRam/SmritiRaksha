@@ -1,64 +1,96 @@
 package com.smritiraksha;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 public class ProfileFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private String patientId, patientName, patientContact, patientAge, patientGender, patientEmail, guideId, guideName;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ProfileFragment() {
-        // Required empty public constructor
+    // Constructor with data parameters (Constructor-based Approach)
+    public ProfileFragment(String patientId, String patientName, String patientContact,
+                           String patientAge, String patientGender, String patientEmail,
+                           String guideId, String guideName) {
+        this.patientId = patientId;
+        this.patientName = patientName;
+        this.patientContact = patientContact;
+        this.patientAge = patientAge;
+        this.patientGender = patientGender;
+        this.patientEmail = patientEmail;
+        this.guideId = guideId;
+        this.guideName = guideName;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    // Default constructor for framework use (Bundle fallback for lifecycle scenarios)
+    public ProfileFragment() {}
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
+        // Fallback to arguments from a Bundle if the data was passed in this way
+        if (savedInstanceState == null && getArguments() != null) {
+            this.patientId = getArguments().getString("patientId");
+            this.patientName = getArguments().getString("patientName");
+            this.patientContact = getArguments().getString("patientContact");
+            this.patientAge = getArguments().getString("patientAge");
+            this.patientGender = getArguments().getString("patientGender");
+            this.patientEmail = getArguments().getString("patientEmail");
+            this.guideId = getArguments().getString("guideId");
+            this.guideName = getArguments().getString("guideName");
         }
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        // Initialize TextViews
+        TextView tvPatientId = view.findViewById(R.id.patient_id);
+        TextView tvPatientName = view.findViewById(R.id.patient_name);
+        TextView tvPatientContact = view.findViewById(R.id.patient_contact);
+        TextView tvPatientAge = view.findViewById(R.id.patient_age);
+        TextView tvPatientGender = view.findViewById(R.id.patient_gender);
+        TextView tvPatientEmail = view.findViewById(R.id.patient_email);
+        TextView tvGuideId = view.findViewById(R.id.guide_id);
+        TextView tvGuideName = view.findViewById(R.id.guide_name);
+
+        // Set data to TextViews
+        tvPatientId.setText("Patient ID: " + patientId);
+        tvPatientName.setText("Name: " + patientName);
+        tvPatientContact.setText("Contact: " + patientContact);
+        tvPatientAge.setText("Age: " + patientAge);
+        tvPatientGender.setText("Gender: " + patientGender);
+        tvPatientEmail.setText("Email: " + patientEmail);
+        tvGuideId.setText("Guide ID: " + guideId);
+        tvGuideName.setText("Guide Name: " + guideName);
+
+        return view;
+    }
+
+    // Helper to create a new instance using a Bundle
+    public static ProfileFragment newInstance(String patientId, String patientName, String patientContact,
+                                              String patientAge, String patientGender, String patientEmail,
+                                              String guideId, String guideName) {
+        ProfileFragment fragment = new ProfileFragment();
+        Bundle args = new Bundle();
+        args.putString("patientId", patientId);
+        args.putString("patientName", patientName);
+        args.putString("patientContact", patientContact);
+        args.putString("patientAge", patientAge);
+        args.putString("patientGender", patientGender);
+        args.putString("patientEmail", patientEmail);
+        args.putString("guideId", guideId);
+        args.putString("guideName", guideName);
+        fragment.setArguments(args);
+        return fragment;
     }
 }

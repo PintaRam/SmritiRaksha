@@ -1,5 +1,6 @@
 package com.smritiraksha;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,12 +20,13 @@ public class Doctor_registration extends AppCompatActivity {
     private TextInputLayout doctorNameLayout, doctorMobileLayout, patientIdLayout, guideIdLayout;
     private TextInputEditText doctorNameEditText, doctorMobileEditText, patientIdEditText, guideIdEditText;
     private MaterialButton confirmButton;
-
+    String guideEmail = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_registration);
-
+        Intent intent = getIntent();
+        guideEmail = intent.getStringExtra("userEmail");
         // Apply window insets for edge-to-edge layout
         View rootLayout = findViewById(android.R.id.content); // Use the root layout of the activity
         ViewCompat.setOnApplyWindowInsetsListener(rootLayout, (v, insets) -> {

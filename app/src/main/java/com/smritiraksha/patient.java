@@ -32,13 +32,15 @@ public class patient extends AppCompatActivity {
     private ArrayList<String> guideIDs = new ArrayList<>();
     private ArrayList<String> guideNames = new ArrayList<>();
     private String selectedGuideName;
-    private final String email = "pintu.borana20@gmail.com";
+    private String email="";
     private static final String TAG = "PatientActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.patient); // Replace with your layout file
+        Intent intent = getIntent();
+        email = intent.getStringExtra("userEmail");
 
         // Initialize UI components
         initializeUI();
@@ -197,6 +199,7 @@ public class patient extends AppCompatActivity {
                             Log.e("Server Response", "Response: " + response);
                             Toast.makeText(this, "Patient registered successfully!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(patient.this, MainActivity.class);
+                            intent.putExtra("userEmail" , email);
                             startActivity(intent);
                             finish();
                         }
