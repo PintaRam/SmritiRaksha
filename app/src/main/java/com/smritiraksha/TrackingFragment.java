@@ -1,11 +1,16 @@
 package com.smritiraksha;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -27,8 +32,13 @@ import com.codebyashish.googledirectionapi.ErrorHandling;
 import com.codebyashish.googledirectionapi.RouteDrawing;
 import com.codebyashish.googledirectionapi.RouteInfoModel;
 import com.codebyashish.googledirectionapi.RouteListener;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -111,18 +121,74 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
         fetchLocation();
     }
 
+    private boolean isLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
     private void fetchLocation() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (!isLocationEnabled()) {
+            // Request to enable location settings
+            LocationRequest locationRequest = LocationRequest.create()
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                    .addLocationRequest(locationRequest);
+
+            SettingsClient settingsClient = LocationServices.getSettingsClient(requireActivity());
+            Task<LocationSettingsResponse> task = settingsClient.checkLocationSettings(builder.build());
+
+            task.addOnSuccessListener(locationSettingsResponse -> fetchLastLocation());
+
+            task.addOnFailureListener(exception -> {
+                if (exception instanceof ResolvableApiException) {
+                    try {
+                        ResolvableApiException resolvable = (ResolvableApiException) exception;
+                        resolvable.startResolutionForResult(getActivity(), LOCATION_REQUEST_CODE);
+                    } catch (IntentSender.SendIntentException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Unable to enable location services.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // Location is already enabled
+            fetchLastLocation();
+        }
+    }
+    private void fetchLastLocation() {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        Task<Location> task = fusedLocationProviderClient.getLastLocation();
-        task.addOnSuccessListener(location -> {
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
             if (location != null) {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                 CameraPosition camera = new CameraPosition.Builder().target(latLng).zoom(12).build();
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(camera));
+            } else {
+                Toast.makeText(getContext(), "Unable to get current location. Please try again.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (isLocationEnabled()) {
+                fetchLastLocation();
+            } else {
+                Toast.makeText(getContext(), "Location services are not enabled. Please enable them manually.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void toggleSearchInputs(FloatingActionButton fab) {
