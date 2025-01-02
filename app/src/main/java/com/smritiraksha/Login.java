@@ -25,7 +25,7 @@ public class Login extends AppCompatActivity {
 
     private MaterialAutoCompleteTextView roleAutoCompleteTextView;
     private TextInputEditText emailEditText, passwordEditText;
-
+    String email = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +82,7 @@ public class Login extends AppCompatActivity {
         }
 
         // Check Email
-        String email = emailEditText.getText().toString().trim();
+         email = emailEditText.getText().toString().trim();
         if (TextUtils.isEmpty(email)) {
             emailEditText.setError("Email is required.");
             return false;
@@ -159,6 +159,8 @@ public class Login extends AppCompatActivity {
                         String userId = jsonResponse.getString("user_id");
                         Toast.makeText(Login.this, "Login Successful as " + roleAutoCompleteTextView.getText().toString(), Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Login.this, MainActivity.class);
+                        intent.putExtra("userEmail", email);
+                        startActivity(intent);
                         startActivity(intent);
                         finish(); // Close the login activity
                     } else {

@@ -129,7 +129,7 @@ public class Registration extends AppCompatActivity {
                             Toast.makeText(Registration.this, message, Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(Registration.this, "Registration successful!", Toast.LENGTH_SHORT).show();
-                            navigateToRoleActivity(role);
+                            navigateToRoleActivity(role, email);
                         }
                     } catch (JSONException e) {
                         Log.e("JSONException", e.getMessage());
@@ -156,7 +156,7 @@ public class Registration extends AppCompatActivity {
     }
 
 
-    private void navigateToRoleActivity(String role) {
+    private void navigateToRoleActivity(String role , String email) {
         Intent intent;
         switch (role.toLowerCase()) {
             case "doctor":
@@ -172,6 +172,7 @@ public class Registration extends AppCompatActivity {
                 Toast.makeText(this, "Unknown role. Unable to navigate.", Toast.LENGTH_SHORT).show();
                 return;
         }
+        intent.putExtra("userEmail", email);
         startActivity(intent);
         finish();
     }

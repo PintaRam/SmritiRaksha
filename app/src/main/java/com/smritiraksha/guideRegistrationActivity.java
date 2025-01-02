@@ -33,12 +33,13 @@ public class guideRegistrationActivity extends AppCompatActivity {
     private TextInputEditText guideNameEditText, guideIdEditText, guideContactEditText, guideAddressEditText;
     private MaterialAutoCompleteTextView guideGenderAutoCompleteTextView;
     private ProgressDialog progressDialog;
-
+    String guideEmail = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide_registration);
-
+        Intent intent = getIntent();
+        guideEmail = intent.getStringExtra("userEmail");
         // Initialize views
         MaterialButton registerButton = findViewById(R.id.btn_guide_submit);
         guideNameEditText = findViewById(R.id.et_guide_name);
@@ -76,7 +77,7 @@ public class guideRegistrationActivity extends AppCompatActivity {
         String guideContact = guideContactEditText.getText().toString().trim();
         String guideAddress = guideAddressEditText.getText().toString().trim();
         String guideGender = guideGenderAutoCompleteTextView.getText().toString().trim();
-        String guideEmail = "pintu.borana20@gmail.com";
+
 
         // Validation
         if (TextUtils.isEmpty(guideName)) {
@@ -154,6 +155,7 @@ public class guideRegistrationActivity extends AppCompatActivity {
     private void navigateToDashboard() {
         // Navigate to dashboard after successful registration
         Intent intent = new Intent(guideRegistrationActivity.this, MainActivity.class);
+        intent.putExtra("userEmail" , guideEmail);
         startActivity(intent);
         finish();
     }
