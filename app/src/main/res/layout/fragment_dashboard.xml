@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Location Display Box -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/box_with_shadow"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp">
+
+            <!-- Logo on Left -->
+            <ImageView
+                android:id="@+id/location_logo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/baseline_location_on_24"
+                android:contentDescription="Location Icon"
+                android:tint="#FF6200EE"
+                android:layout_marginEnd="16dp" />
+
+            <!-- Address Text on Right -->
+            <TextView
+                android:id="@+id/current_location_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Fetching location..."
+                android:textSize="16sp"
+                android:gravity="start|center_vertical"
+                android:lineSpacingExtra="4dp"
+                android:textColor="#000000"
+                android:fontFamily="sans-serif-medium" />
+
+        </LinearLayout>
+
+        <!-- Key Metrics Display (Two Rows) -->
+
+        <!-- First Row: Heart Rate and Steps -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <!-- Heart Rate Box -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/box_with_shadow"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <!-- Heart Rate Logo -->
+                <ImageView
+                    android:id="@+id/heart_rate_logo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_hear_rate"
+                    android:contentDescription="Heart Rate Icon"
+                    android:tint="#FF5722"
+                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="center_horizontal" />
+
+                <TextView
+                    android:id="@+id/heart_rate_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Heart Rate: Fetching..."
+                    android:textSize="16sp"
+                    android:gravity="center_horizontal"
+                    android:textColor="#000000"
+                    android:fontFamily="sans-serif-medium"
+                    android:lineSpacingExtra="4dp" />
+            </LinearLayout>
+
+            <!-- Steps Box -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/box_with_shadow"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <!-- Steps Logo -->
+                <ImageView
+                    android:id="@+id/steps_logo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_steps"
+                    android:contentDescription="Steps Icon"
+                    android:tint="#4CAF50"
+                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="center_horizontal" />
+
+                <!-- Steps Text -->
+                <TextView
+                    android:id="@+id/steps_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Steps Walked: Fetching..."
+                    android:textSize="16sp"
+                    android:gravity="center_horizontal"
+                    android:textColor="#000000"
+                    android:fontFamily="sans-serif-medium"
+                    android:lineSpacingExtra="4dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Second Row: Sleep Duration and Weight -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <!-- Sleep Duration Box -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/box_with_shadow"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <!-- Sleep Logo -->
+                <ImageView
+                    android:id="@+id/sleep_logo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_sleep"
+                    android:contentDescription="Sleep Icon"
+                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="center_horizontal" />
+
+                <!-- Sleep Text -->
+                <TextView
+                    android:id="@+id/sleep_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sleep Duration: Fetching..."
+                    android:textSize="16sp"
+                    android:gravity="center_horizontal"
+                    android:textColor="#000000"
+                    android:fontFamily="sans-serif-medium"
+                    android:lineSpacingExtra="4dp" />
+            </LinearLayout>
+
+            <!-- Weight Box -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/box_with_shadow"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <!-- Weight Logo -->
+                <ImageView
+                    android:id="@+id/weight_logo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_weight"
+                    android:contentDescription="Weight Icon"
+                    android:tint="#FFC107"
+                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="center_horizontal" />
+
+                <!-- Weight Text -->
+                <TextView
+                    android:id="@+id/weight_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weight: Fetching..."
+                    android:textSize="16sp"
+                    android:gravity="center_horizontal"
+                    android:textColor="#000000"
+                    android:fontFamily="sans-serif-medium"
+                    android:lineSpacingExtra="4dp" />
+            </LinearLayout>
+        </LinearLayout>
+        <!-- Quick Access to Brain Games and Puzzles -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/box_with_shadow"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/brain_games_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Brain Games and Puzzles"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="#000000"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Game Cards -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Memory Game -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/box_with_shadow"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <ImageView
+                        android:id="@+id/memory_game_icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_memeory"
+                        android:contentDescription="Memory Game Icon"
+
+                        android:layout_marginEnd="16dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/memory_game_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Memory Game"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif-medium"
+                            android:textColor="#000000"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/memory_game_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Enhance your memory skills!"
+                            android:textSize="14sp"
+                            android:fontFamily="sans-serif"
+                            android:textColor="#555555" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/memory_game_play_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Play"
+
+                        android:textColor="#FFFFFF"
+                        android:padding="8dp"
+                        android:fontFamily="sans-serif-medium" />
+                </LinearLayout>
+
+                <!-- Logic Puzzles -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/box_with_shadow"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <ImageView
+                        android:id="@+id/logic_puzzle_icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_puzzle"
+                        android:contentDescription="Logic Puzzle Icon"
+                        android:layout_marginEnd="16dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/logic_puzzle_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Logic Puzzles"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif-medium"
+                            android:textColor="#000000"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/logic_puzzle_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sharpen your logical thinking!"
+                            android:textSize="14sp"
+                            android:fontFamily="sans-serif"
+                            android:textColor="#555555" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/logic_puzzle_play_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Play"
+                        android:textColor="#FFFFFF"
+                        android:padding="8dp"
+                        android:fontFamily="sans-serif-medium" />
+                </LinearLayout>
+
+                <!-- Sudoku -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/box_with_shadow"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <ImageView
+                        android:id="@+id/sudoku_icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_sudoku"
+                        android:contentDescription="Sudoku Icon"
+                        android:layout_marginEnd="16dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/sudoku_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sudoku"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif-medium"
+                            android:textColor="#000000"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/sudoku_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Boost your number skills!"
+                            android:textSize="14sp"
+                            android:fontFamily="sans-serif"
+                            android:textColor="#555555" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/sudoku_play_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Play"
+
+                        android:textColor="#FFFFFF"
+                        android:padding="8dp"
+                        android:fontFamily="sans-serif-medium" />
+                </LinearLayout>
+
+                <!-- Word Search -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/box_with_shadow"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:id="@+id/word_search_icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_word_search"
+                        android:contentDescription="Word Search Icon"
+                        android:layout_marginEnd="16dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/word_search_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Word Search"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif-medium"
+                            android:textColor="#000000"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/word_search_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Find hidden words to improve vocabulary!"
+                            android:textSize="14sp"
+                            android:fontFamily="sans-serif"
+                            android:textColor="#555555" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/word_search_play_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Play"
+                        android:textColor="#FFFFFF"
+                        android:padding="8dp"
+                        android:fontFamily="sans-serif-medium" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>

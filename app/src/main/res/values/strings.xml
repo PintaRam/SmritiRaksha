@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">SmritiRaksha</string>
+    <string name="navigation_drawer_open">Open Navigation</string>
+    <string name="navigation_drawer_close">Close Navigation</string>
+    <string name="profile">Profile</string>
+    <string-array name="gender_options">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="GMap_APIKEY">AIzaSyBPIUMX05Di24qGOo9jBjcXO7sZqTL52qA</string>
 </resources>
