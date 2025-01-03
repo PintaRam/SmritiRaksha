@@ -37,9 +37,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Get email from the intent
-        Intent intent = getIntent();
-        email = intent.getStringExtra("userEmail");
-        Log.d("email", email);
+//        Intent intent = getIntent();
+//        email = intent.getStringExtra("userEmail");
+//        Log.d("email", email);
 
         // Toolbar setup
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
