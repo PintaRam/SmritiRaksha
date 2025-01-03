@@ -74,7 +74,7 @@ public class MedicalReminderFragment extends Fragment {
             if (!currentMessage.equals("Take your morning medicine!")) {
                 updateNotification("Take your morning medicine!", R.raw.medicine_reminder);
             }
-        } else if (hour == 10 && minute >= 30 && hour < 13) {
+        } else if (hour >= 10 && hour < 13) {
             if (!currentMessage.equals("Drink a glass of water!")) {
                 updateNotification("Drink a glass of water!", R.raw.hydration_reminder);
             }
