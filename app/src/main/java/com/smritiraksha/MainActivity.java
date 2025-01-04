@@ -1,12 +1,11 @@
 package com.smritiraksha;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -19,118 +18,110 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private DrawerLayout drawerLayout;
-    private String email;
     private JSONObject userDetails;
+    String email =  "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Get email from the intent
-//        Intent intent = getIntent();
-//        email = intent.getStringExtra("userEmail");
-//        Log.d("email", email);
-
-        // Toolbar setup
-        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        // Drawer Layout setup
+        Intent intent = getIntent();
+        email = intent.getStringExtra("userEmail");
         drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-
-        // Profile button toggles the drawer
         ImageButton profileButton = findViewById(R.id.btn_profile);
-        profileButton.setOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
 
-        // Handle navigation view item clicks
-        navigationView.setNavigationItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_profile_settings) {
-                // Handle Profile Settings item click
-                if (userDetails != null) {
-                    ProfileFragment fragment = new ProfileFragment();
-                    Bundle args = new Bundle();
-                    args.putString("userDetails", userDetails.toString());
-                    fragment.setArguments(args);
-                    loadFragment(fragment);
-                } else {
-                    Toast.makeText(this, "User details not loaded yet", Toast.LENGTH_SHORT).show();
-                }
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
-            }
-            return false;
-        });
+        profileButton.setOnClickListener(view -> toggleProfileDrawer());
 
-        // Bottom Navigation setup
+        // Bottom Navigation
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
-            for (int i = 0; i < bottomNavigation.getChildCount(); i++) {
-                View view = bottomNavigation.getChildAt(i);
-                view.animate().scaleX(1.0f).scaleY(1.0f).translationY(0).setDuration(200).start();
-            }
-
-            // Animate clicked item
-            View selectedView = bottomNavigation.findViewById(item.getItemId());
-            if (selectedView != null) {
-                selectedView.animate().scaleX(1.2f).scaleY(1.2f).translationY(-10).setDuration(200).start();
-            }
-
-            // Load the correct fragment
-            Fragment selectedFragment = null;
-            if (item.getItemId() == R.id.nav_tracking) {
-                selectedFragment = new TrackingFragment();
+            if (item.getItemId() == R.id.nav_dashboard) {
+                loadFragment(new DashboardFragment());
+            } else if (item.getItemId() == R.id.nav_tracking) {
+                loadFragment(new TrackingFragment());
             } else if (item.getItemId() == R.id.nav_reminder) {
-                selectedFragment = new MedicalReminderFragment();
-            } else if (item.getItemId() == R.id.nav_dashboard) {
-                selectedFragment = new DashboardFragment();
+                loadFragment(new MedicalReminderFragment());
             } else if (item.getItemId() == R.id.nav_emergency) {
-                selectedFragment = new EmergencyFragment();
+                loadFragment(new EmergencyFragment());
             }
-
-            if (selectedFragment != null) {
-                loadFragment(selectedFragment);
-            }
+            drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
 
-        // Default fragment: Dashboard
+        // Default Fragment
         if (savedInstanceState == null) {
-            bottomNavigation.setSelectedItemId(R.id.nav_dashboard);
             loadFragment(new DashboardFragment());
         }
 
-        // Fetch user details
-        fetchUserDetails(email);
+        // Fetch User Details
+        fetchUserDetails("patient1@gmail.com"); // Replace with dynamic email
     }
 
     private void fetchUserDetails(String email) {
         String url = Constants.FETCH_PATIENT_URL + "?email=" + email;
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        userDetails = response; // Store the details for later use
-                        Log.d("MainActivity", "User details fetched successfully: " + userDetails.toString());
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    Log.d(TAG, "User Details Fetched: " + response);
+                    userDetails = response.optJSONObject("patient_data"); // Extract "patient_data" safely
+                    if (userDetails == null) {
+                        Toast.makeText(MainActivity.this, "No patient data found in response", Toast.LENGTH_SHORT).show();
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, "Error fetching user details: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+                error -> {
+                    Log.e(TAG, "Error Fetching User Details: ", error);
+                    Toast.makeText(MainActivity.this, "Error fetching user details: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 });
 
-        Volley.newRequestQueue(this).add(jsonObjectRequest);
+        Volley.newRequestQueue(this).add(request);
+    }
+
+    private void toggleProfileDrawer() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            if (userDetails != null) {
+                try {
+                    String patientId = getSafeJsonValue(userDetails, "patient_id");
+                    String patientName = getSafeJsonValue(userDetails, "patient_name");
+                    String patientContact = getSafeJsonValue(userDetails, "contact");
+                    String patientAge = getSafeJsonValue(userDetails, "age");
+                    String patientGender = getSafeJsonValue(userDetails, "gender");
+                    String patientEmail = getSafeJsonValue(userDetails, "email");
+                    String guideId = getSafeJsonValue(userDetails, "guide_id");
+                    String guideName = getSafeJsonValue(userDetails, "guide_name");
+
+                    if (patientId.isEmpty()) {
+                        Toast.makeText(MainActivity.this, "Patient ID is missing", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    ProfileFragment profileFragment = ProfileFragment.newInstance(
+                            patientId, patientName, patientContact, patientAge,
+                            patientGender, patientEmail, guideId, guideName
+                    );
+
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.profile_drawer, profileFragment)
+                            .commit();
+                    drawerLayout.openDrawer(GravityCompat.START);
+
+                } catch (Exception e) {
+                    Log.e(TAG, "Error Setting Profile Details: ", e);
+                    Toast.makeText(MainActivity.this, "Error displaying profile details", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(MainActivity.this, "Loading user details, please wait...", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void loadFragment(Fragment fragment) {
@@ -139,12 +130,15 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+    /**
+     * Safely retrieves a JSON value by key, returning an empty string if the key is missing or invalid.
+     */
+    private String getSafeJsonValue(JSONObject jsonObject, String key) {
+        try {
+            return jsonObject.has(key) ? jsonObject.getString(key) : "";
+        } catch (JSONException e) {
+            Log.e(TAG, "Missing or Invalid Key: " + key, e);
+            return "";
         }
     }
 }

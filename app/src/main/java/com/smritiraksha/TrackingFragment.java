@@ -1,5 +1,7 @@
 package com.smritiraksha;
 
+
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
@@ -59,9 +61,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * A Fragment that displays a map with the ability to create journeys.
- */
+
 public class TrackingFragment extends Fragment implements OnMapReadyCallback, RouteListener {
 
     private static final int LOCATION_REQUEST_CODE = 101;
@@ -323,7 +323,11 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
 
     @Override
     public void onRouteFailure(ErrorHandling e) {
-        Toast.makeText(getContext(), "Route calculation failed.", Toast.LENGTH_SHORT).show();
+        if (getContext() != null) {
+            Toast.makeText(getContext(), "Route calculation failed: " , Toast.LENGTH_SHORT).show();
+        } else {
+            Log.e("Ram", "Context is null, cannot display toast");
+        }
     }
 
     @Override
