@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Fetch User Details
-        fetchUserDetails("patient1@gmail.com"); // Replace with dynamic email
+        fetchUserDetails(email); // Replace with dynamic email
     }
 
     private void fetchUserDetails(String email) {
