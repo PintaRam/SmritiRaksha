@@ -26,7 +26,7 @@ public class MedicalReminderFragment extends Fragment {
     private Handler handler = new Handler();
 
     // Current Lottie file and message
-    private String currentLottieFile = "default_animation.json"; // Default animation
+    private String currentLottieFile = "clock_animation.json"; // Default animation
     private String currentMessage = "Welcome! Stay tuned for your reminders.";
 
     @Nullable
@@ -68,33 +68,37 @@ public class MedicalReminderFragment extends Fragment {
         // Handle the time from 6 AM to 9 AM with a default animation
         if (hour >= 6 && hour < 9) {
             if (!currentMessage.equals("Good morning! Please wait for your first reminder.")) {
-                updateNotification("Good morning! Please wait for your first reminder.", "clock_animation.json");
+                updateNotification("Good morning! Please wait for your first reminder.", R.raw.clock_animation);
             }
-        } else {
-            // Define your reminders based on time
-            if (hour == 9 && minute == 0 && !currentMessage.equals("Take your morning medicine!")) {
-                updateNotification("Take your morning medicine!", "medicine_reminder.json");
-            } else if (hour == 10 && minute == 30 && !currentMessage.equals("Drink a glass of water!")) {
-                updateNotification("Drink a glass of water!", "hydration_reminder.json");
-            } else if (hour == 13 && minute == 0 && !currentMessage.equals("Time for your lunch!")) {
-                updateNotification("Time for your lunch!", "lunch_reminder.json");
-            } else if (hour == 17 && minute == 0 && !currentMessage.equals("Go for your evening walk!")) {
-                updateNotification("Go for your evening walk!", "exercise_reminder.json");
-            } else if (hour == 21 && minute == 0 && !currentMessage.equals("Prepare for bed and relax!")) {
-                updateNotification("Prepare for bed and relax!", "bedtime_reminder.json");
+        } else if (hour >= 9 && hour < 10) {
+            if (!currentMessage.equals("Take your morning medicine!")) {
+                updateNotification("Take your morning medicine!", R.raw.medicine_reminder);
+            }
+        } else if (hour >= 10 && hour < 13) {
+            if (!currentMessage.equals("Drink a glass of water!")) {
+                updateNotification("Drink a glass of water!", R.raw.hydration_reminder);
+            }
+        } else if (hour >= 13 && hour < 17) {
+            if (!currentMessage.equals("Time for your lunch!")) {
+                updateNotification("Time for your lunch!", R.raw.lunch_reminder);
+            }
+        } else if (hour >= 17 && hour < 21) {
+            if (!currentMessage.equals("Go for your evening walk!")) {
+                updateNotification("Go for your evening walk!", R.raw.exercise_reminder);
+            }
+        } else if (hour >= 21 || hour < 6) { // Bedtime reminder visible until 6 AM
+            if (!currentMessage.equals("Prepare for bed and relax!")) {
+                updateNotification("Prepare for bed and relax!", R.raw.bedtime_reminder);
             }
         }
-
-        // The same Lottie animation and message remain visible until the next update
     }
 
-    private void updateNotification(String message, String lottieFile) {
-        // Update the current message and Lottie file
+    private void updateNotification(String message, int lottieResId) {
+        // Update the current message and Lottie resource ID
         currentMessage = message;
-        currentLottieFile = lottieFile;
 
-        // Set Lottie animation
-        lottieAnimationView.setAnimation(lottieFile);
+        // Set Lottie animation from raw resource
+        lottieAnimationView.setAnimation(lottieResId);
         lottieAnimationView.playAnimation();
 
         // Set reminder message
@@ -105,6 +109,7 @@ public class MedicalReminderFragment extends Fragment {
             textToSpeech.speak(message, TextToSpeech.QUEUE_FLUSH, null, null);
         }
     }
+
 
     @Override
     public void onDestroy() {
