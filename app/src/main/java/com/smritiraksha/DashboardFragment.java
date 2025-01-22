@@ -1,6 +1,7 @@
 package com.smritiraksha;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -79,6 +81,13 @@ public class DashboardFragment extends Fragment implements SensorEventListener {
         if (stepCounterSensor != null) {
             sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_UI);
         }
+        // Add OnClickListener for Logic Play button
+        Button logicPlayButton = view.findViewById(R.id.logic_puzzle_play_button);
+        logicPlayButton.setOnClickListener(v -> {
+            // Start LogicPuzzleSplash Activity
+            Intent intent = new Intent(requireContext(), LogicPuzzleSplash.class);
+            startActivity(intent);
+        });
     }
 
     private void fetchCurrentLocation() {
