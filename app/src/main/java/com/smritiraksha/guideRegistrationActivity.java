@@ -154,7 +154,7 @@ public class guideRegistrationActivity extends AppCompatActivity {
 
     private void navigateToDashboard() {
         // Navigate to dashboard after successful registration
-        Intent intent = new Intent(guideRegistrationActivity.this, MainActivity.class);
+        Intent intent = new Intent(guideRegistrationActivity.this, guidesMainActivity.class);
         intent.putExtra("userEmail" , guideEmail);
         startActivity(intent);
         finish();

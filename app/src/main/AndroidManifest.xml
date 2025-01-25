@@ -20,6 +20,9 @@
         android:theme="@style/Theme.SmritiRaksha"
         tools:targetApi="31">
         <activity
+            android:name=".guidesMainActivity"
+            android:exported="false" />
+        <activity
             android:name=".LogicPuzzleActivity"
             android:exported="false" />
         <activity
