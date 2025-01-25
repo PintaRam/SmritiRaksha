@@ -76,12 +76,23 @@ public class Word_Search_Game extends AppCompatActivity {
         int cellWidth = gridWidthPx / 6;  // 6 columns
         int cellHeight = gridHeightPx / 6;  // 6 rows
 
+        // Ensure the grid has exactly 36 elements (6x6 grid)
+        if (grid == null || grid.length != 36) {
+            grid = new String[36];
+            Arrays.fill(grid, " ");
+        }
+
         // Fill the grid with random letters if they are empty
         for (int i = 0; i < grid.length; i++) {
             if (grid[i].equals(" ")) {
                 grid[i] = String.valueOf((char) ('A' + rand.nextInt(26)));  // Random letter from A-Z
             }
         }
+
+        // Clear any existing views in the GridLayout
+        gridLayout.removeAllViews();
+        gridLayout.setRowCount(6);
+        gridLayout.setColumnCount(6);
 
         // Populate the GridLayout with TextViews for each letter
         for (int i = 0; i < grid.length; i++) {
@@ -101,14 +112,13 @@ public class Word_Search_Game extends AppCompatActivity {
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = cellWidth;  // Set the width of each cell
             params.height = cellHeight;  // Set the height of each cell
-            params.rowSpec = GridLayout.spec(i / 6);  // Row index (for 6 rows)
-            params.columnSpec = GridLayout.spec(i % 6);  // Column index (for 6 columns)
+            params.rowSpec = GridLayout.spec(i / 6, 1);  // Row index (for 6 rows)
+            params.columnSpec = GridLayout.spec(i % 6, 1);  // Column index (for 6 columns)
             letterView.setLayoutParams(params);
 
             gridLayout.addView(letterView);  // Add the TextView to the GridLayout
         }
     }
-
 
 
 
