@@ -1,32 +1,28 @@
 package com.smritiraksha;
 
 import android.content.Context;
-import android.view.Gravity;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.TextView;
-
-import java.util.List;
-
-public class WordSearchAdapter extends BaseAdapter {
+public class WordSearchAdapter extends  BaseAdapter {
     private Context context;
-    private List<Character> gridData;
+    private String[] gridData;
 
-    public WordSearchAdapter(Context context, List<Character> gridData) {
+    public WordSearchAdapter(Context context, String[] gridData) {
         this.context = context;
         this.gridData = gridData;
     }
 
     @Override
     public int getCount() {
-        return gridData.size();
+        return gridData.length;
     }
 
     @Override
     public Object getItem(int position) {
-        return gridData.get(position);
+        return gridData[position];
     }
 
     @Override
@@ -36,16 +32,21 @@ public class WordSearchAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        TextView cell;
+        TextView textView;
         if (convertView == null) {
-            cell = new TextView(context);
-            cell.setLayoutParams(new GridView.LayoutParams(100, 100)); // Adjust size
-            cell.setGravity(Gravity.CENTER);
-            cell.setTextSize(18);
+            textView = new TextView(context);
+            textView.setTextSize(20);
+            textView.setPadding(10, 10, 10, 10);
+            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         } else {
-            cell = (TextView) convertView;
+            textView = (TextView) convertView;
         }
-        cell.setText(String.valueOf(gridData.get(position)));
-        return cell;
+
+        textView.setText(gridData[position]);
+
+        // If word is selected, highlight it
+        textView.setBackgroundColor(Color.TRANSPARENT);
+
+        return textView;
     }
 }

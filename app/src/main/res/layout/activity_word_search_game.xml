@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Word_Search_Game">
+
+    <!-- Title at the top -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Word Search"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@string/app_name"
+        android:textFontWeight="600"
+        android:textSize="24sp"
+        android:layout_gravity="center"
+        android:paddingBottom="16dp"/>
+
+    <!-- GridLayout for displaying letters -->
+    <GridLayout
+        android:id="@+id/gridLayout"
+        android:layout_width="318dp"
+        android:layout_height="317dp"
+        android:orientation="horizontal"
+        android:columnCount="6"
+        android:rowCount="6"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/cell_background"/>
+
+    <!-- List of words to search -->
+    <TextView
+        android:id="@+id/wordListTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Words to Find:"
+        android:fontFamily="@string/common_google_play_services_enable_text"
+        android:textFontWeight="400"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"/>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:id="@+id/wordListContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:orientation="horizontal"/>
+
+    </HorizontalScrollView>
+
+</LinearLayout>

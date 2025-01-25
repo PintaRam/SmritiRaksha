@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.BODY_SENSORS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -19,6 +20,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmritiRaksha"
         tools:targetApi="31">
+        <activity
+            android:name=".Word_Search_Game"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".LogicPuzzleActivity"
             android:exported="false" />
@@ -37,12 +47,12 @@
             android:name=".MainActivity"
             android:exported="true">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
+<!--             <intent-filter>-->
+<!--             <action android:name="android.intent.action.MAIN" />-->
 
 
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+<!--             <category android:name="android.intent.category.LAUNCHER" />-->
+<!--             </intent-filter>-->
         </activity>
         <activity
             android:name=".guideRegistrationActivity"
@@ -59,11 +69,11 @@
         <activity
             android:name=".Splash"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
     </application>
 

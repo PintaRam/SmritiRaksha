@@ -48,17 +48,7 @@ public class DashboardFragment extends Fragment implements SensorEventListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        wordSearchButton = rootView.findViewById(R.id.word_search_play_button);
-        wordSearchButton.setOnClickListener(v -> {
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new WordSearchFragment())
-                    .addToBackStack(null)
-                    .commit();
-        });
-
-        return rootView;
+        return  inflater.inflate(R.layout.fragment_dashboard, container, false);
     }
 
     @Override
@@ -83,6 +73,15 @@ public class DashboardFragment extends Fragment implements SensorEventListener {
         currentLocationTextView = view.findViewById(R.id.current_location_text);
         heartRateTextView = view.findViewById(R.id.heart_rate_text);
         stepsTextView = view.findViewById(R.id.steps_text);
+        wordSearchButton=view.findViewById(R.id.word_search_play_button);
+
+        wordSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent wrdsrch= new Intent(requireContext(), Word_Search_Game.class);
+                startActivity(wrdsrch);
+            }
+        });
 
         // Fetch Current Location
         fetchCurrentLocation();

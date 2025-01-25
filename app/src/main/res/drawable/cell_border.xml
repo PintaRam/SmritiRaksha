@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background color for each cell -->
+    <solid android:color="#F6E8E2"/>
+
+    <!-- Border color and width -->
+    <stroke android:color="#000000" android:width="2dp"/>
+
+    <!-- Padding inside each cell -->
+    <padding android:left="8dp" android:top="8dp" android:right="8dp" android:bottom="8dp"/>
+</shape>
