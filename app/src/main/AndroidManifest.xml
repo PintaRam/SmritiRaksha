@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.BODY_SENSORS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -19,6 +20,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmritiRaksha"
         tools:targetApi="31">
+        <activity
+            android:name=".Wordsearchsplash"
+            android:exported="false" />
+        <activity
+            android:name=".Word_Search_Game"
+            android:exported="false"/>
+        
         <activity
             android:name=".guidesMainActivity"
             android:exported="false" />
@@ -62,17 +70,25 @@
         <!-- Sudoku Splash (Launcher Activity) -->
         <activity
             android:name=".sudokuSplash"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true"/>
+        
 
         <!-- Sudoku Activity -->
         <activity
             android:name=".sudoku"
             android:exported="true" />
+      
+      <activity
+            android:name=".Splash"
+            android:exported="true">
+
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
+
+
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+        </activity>
 ,
         <!-- Success Activity -->
         <activity
