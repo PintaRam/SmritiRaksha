@@ -25,9 +25,11 @@
             android:exported="false" />
         <activity
             android:name=".Word_Search_Game"
-            android:exported="false">
-
-        </activity>
+            android:exported="false"/>
+        
+        <activity
+            android:name=".guidesMainActivity"
+            android:exported="false" />
         <activity
             android:name=".LogicPuzzleActivity"
             android:exported="false" />
@@ -65,7 +67,18 @@
         <activity
             android:name=".patient"
             android:exported="false" />
+        <!-- Sudoku Splash (Launcher Activity) -->
         <activity
+            android:name=".sudokuSplash"
+            android:exported="true"/>
+        
+
+        <!-- Sudoku Activity -->
+        <activity
+            android:name=".sudoku"
+            android:exported="true" />
+      
+      <activity
             android:name=".Splash"
             android:exported="true">
 
@@ -76,6 +89,21 @@
              <category android:name="android.intent.category.LAUNCHER" />
              </intent-filter>
         </activity>
+,
+        <!-- Success Activity -->
+        <activity
+            android:name=".SuccessActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+<!--        <activity-->
+<!--            android:name=".sudokuSplash"-->
+<!--            android:exported="true">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
     </application>
 
 </manifest>
