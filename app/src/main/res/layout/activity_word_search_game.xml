@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/wrdsrchLyt"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Word_Search_Game">
+
+    <!-- Title at the top -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:textAlignment="center">
+
+        <ImageView
+            android:id="@+id/BackImg"
+            android:layout_width="33dp"
+            android:layout_height="36dp"
+            app:srcCompat="@drawable/backimg" />
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="284dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@string/app_name"
+            android:paddingBottom="16dp"
+            android:text="Word Search"
+            android:textAlignment="center"
+            android:textFontWeight="600"
+            android:textSize="24sp" />
+
+    </LinearLayout>
+
+
+    <!-- GridLayout for displaying letters -->
+    <GridLayout
+        android:id="@+id/gridLayout"
+        android:layout_width="328dp"
+        android:layout_height="400dp"
+        android:orientation="horizontal"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center"
+        android:padding="1dp"
+        android:layout_marginBottom="16dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/cell_background"/>
+
+    <!-- List of words to search -->
+    <TextView
+        android:id="@+id/wordListTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Words to Find:"
+        android:fontFamily="@string/common_google_play_services_update_title"
+        android:textFontWeight="400"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"/>
+
+
+        <GridLayout
+            android:id="@+id/wordListContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:columnCount="4"
+            android:rowCount="2"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"/>
+
+</LinearLayout>
