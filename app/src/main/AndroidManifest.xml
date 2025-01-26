@@ -46,14 +46,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+            android:exported="false">
         </activity>
         <activity
             android:name=".guideRegistrationActivity"
@@ -63,20 +56,18 @@
             android:exported="false" />
         <activity
             android:name=".Login"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".patient"
             android:exported="false" />
-        <!-- Sudoku Splash (Launcher Activity) -->
         <activity
             android:name=".sudokuSplash"
-            android:exported="true"/>
-        
+            android:exported="false"/>
 
         <!-- Sudoku Activity -->
         <activity
             android:name=".sudoku"
-            android:exported="true" />
+            android:exported="false" />
       
       <activity
             android:name=".Splash"
@@ -95,15 +86,15 @@
             android:name=".SuccessActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-<!--        <activity-->
-<!--            android:name=".sudokuSplash"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
+        <activity
+            android:name=".Splash"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_dashboard"
+        android:icon="@drawable/ic_dashboard"
+        android:title="Dashboard" />
+    <item
+        android:id="@+id/navigation_live_tracking"
+        android:icon="@drawable/ic_navigation"
+        android:title="Live Tracking" />
+    <item
+        android:id="@+id/navigation_reminder"
+        android:icon="@drawable/ic_alarm"
+        android:title="Reminder" />
+    <item
+        android:id="@+id/navigation_emergency"
+        android:icon="@drawable/ic_emergency"
+        android:title="Emergency" />
+</menu>
