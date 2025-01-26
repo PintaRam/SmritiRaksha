@@ -1,23 +1,28 @@
 package com.smritiraksha;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -29,7 +34,10 @@ public class Word_Search_Game extends AppCompatActivity {
     private String[] grid = new String[36]; // 6x6 grid
     private List<TextView> selectedLetters = new ArrayList<>();
     private List<String> foundWords = new ArrayList<>();
+    private ImageView Back;
     private Vibrator vibrator;
+
+    private List<String> words ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,24 +46,89 @@ public class Word_Search_Game extends AppCompatActivity {
         gridLayout = findViewById(R.id.gridLayout);
         wordListContainer = findViewById(R.id.wordListContainer);
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        Back=findViewById(R.id.BackImg);
+        Back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainintent=new Intent(Word_Search_Game.this,MainActivity.class);
+                startActivity(mainintent);
+            }
+        });
 
-        wordsToFind = new ArrayList<>(Arrays.asList("WORD", "FIND", "GAME", "JAVA", "ANDROID"));
+
+        words = new ArrayList<>();
+
+        // Adding words to the list
+        words.add("Apple");
+        words.add("Beach");
+        words.add("Brave");
+        words.add("Chair");
+        words.add("Cloud");
+        words.add("Dance");
+        words.add("Dream");
+        words.add("Earth");
+        words.add("Flame");
+        words.add("Glove");
+        words.add("Happy");
+        words.add("House");
+        words.add("Jelly");
+        words.add("Light");
+        words.add("Magic");
+        words.add("Night");
+        words.add("Ocean");
+        words.add("Peace");
+        words.add("Power");
+        words.add("Quiet");
+        words.add("River");
+        words.add("Smile");
+        words.add("Spark");
+        words.add("Stone");
+        words.add("Tiger");
+        words.add("Unity");
+        words.add("Water");
+        words.add("Winds");
+        words.add("Zebra");
+        words.add("Bright");
+        words.add("Butter");
+        words.add("Castle");
+        words.add("Circle");
+        words.add("Desert");
+        words.add("Friend");
+        words.add("Garden");
+        words.add("Golden");
+        words.add("Hunter");
+        words.add("Island");
+        words.add("Laughs");
+        words.add("Mirror");
+        words.add("Orange");
+        words.add("Puzzle");
+        words.add("Rocket");
+        words.add("Secret");
+        words.add("Silver");
+        words.add("Travel");
+        words.add("Valley");
+        words.add("Wisdom");
+        words.add("Yellow");
+
+        Collections.shuffle(words);
+
+        wordsToFind = new ArrayList<>(words.subList(0, 5));
 
         // Loop through the list and create a TextView for each word
         for (String word : wordsToFind) {
             TextView textView = new TextView(this);
             textView.setText(word);
-            textView.setTextSize(18); // You can adjust the size as needed
+            textView.setTextSize(16); // You can adjust the size as needed
             textView.setPadding(10, 10, 10, 10); // Optional padding
 
             // Create LayoutParams with margins
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
+                    250,  // Width in pixels (replace with dp conversion if needed)
+                    80
             );
 
             // Set the margins (left, top, right, bottom)
-            layoutParams.setMargins(20, 20, 20, 20);  // Adjust these values as needed
+            layoutParams.setMargins(10, 10, 10, 10);  // Adjust these values as needed
             textView.setLayoutParams(layoutParams);
             wordListContainer.addView(textView);
         }
@@ -144,7 +217,7 @@ public class Word_Search_Game extends AppCompatActivity {
 
     private void populateGridLayout(int gridSize) {
         // Convert grid dimensions from dp to pixels
-        int gridWidthPx = (int) (getResources().getDisplayMetrics().density * 322);  // 318dp to pixels
+        int gridWidthPx = (int) (getResources().getDisplayMetrics().density * 328);  // 318dp to pixels
         int gridHeightPx = (int) (getResources().getDisplayMetrics().density * 400); // 317dp to pixels
 
         int cellWidth = gridWidthPx / gridSize;  // Cell width
@@ -173,42 +246,99 @@ public class Word_Search_Game extends AppCompatActivity {
     }
 
     // Handle the letter click event
-    private void onLetterClicked(TextView letterView, int position) {
-        if (selectedLetters.contains(letterView)) {
-            // If already selected, remove from list and reset background
-            selectedLetters.remove(letterView);
-            letterView.setBackgroundResource(R.drawable.cell_border);
-        } else {
-            // Add to selected list
-            selectedLetters.add(letterView);
-            letterView.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));  // Highlight selected letter
-        }
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getActionMasked();
 
-        // Check if the selected letters form a valid word
-        String word = getSelectedWord();
-        if (wordsToFind.contains(word)) {
+        // Get touch coordinates relative to the GridLayout
+        int[] gridLocation = new int[2];
+        gridLayout.getLocationOnScreen(gridLocation);
+
+        float x = event.getRawX() - gridLocation[0]; // Adjust for GridLayout's X position
+        float y = event.getRawY() - gridLocation[1]; // Adjust for GridLayout's Y position
+
+        int gridSize = (int) Math.sqrt(grid.length); // Assuming square grid
+        int cellWidth = gridLayout.getWidth() / gridSize;
+        int cellHeight = gridLayout.getHeight() / gridSize;
+
+        int col = (int) (x / cellWidth);
+        int row = (int) (y / cellHeight);
+        int position = row * gridSize + col;
+
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                selectedLetters.clear();
+                addLetterToSelection(position);
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                if (isValidGridPosition(position)) {
+                    addLetterToSelection(position);
+                }
+                break;
+
+            case MotionEvent.ACTION_UP:
+                validateSelection();
+                break;
+        }
+        return true;
+    }
+
+
+    private boolean isValidGridPosition(int position) {
+        return position >= 0 && position < grid.length;
+    }
+
+    private void addLetterToSelection(int position) {
+        if (!isValidGridPosition(position)) return;
+
+        View letterView = gridLayout.getChildAt(position);
+
+        if (letterView instanceof TextView && !selectedLetters.contains(letterView)) {
+            selectedLetters.add((TextView) letterView);
+            letterView.setBackgroundResource(R.drawable.selected_cell_border); // Highlight selected cell
+        }
+    }
+
+    private void validateSelection() {
+        String selectedWord = getSelectedWord();
+
+        if (wordsToFind.contains(selectedWord)) {
             // Highlight the word in the grid
-            highlightWord(word);
+            highlightWord(selectedWord);
             // Strike it off in the word list
-            strikeWordInWordList(word);
+            strikeWordInWordList(selectedWord);
             // Add to found words list
-            foundWords.add(word);
+            foundWords.add(selectedWord);
             checkGameCompletion();
-        } else if (selectedLetters.size() > word.length()) {
-            // If it's a wrong selection, vibrate for feedback
+        } else {
+            // Reset background for incorrectly selected letters
+            for (TextView letterView : selectedLetters) {
+                letterView.setBackgroundResource(R.drawable.cell_border);
+            }
+            // Provide feedback for wrong selection
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createOneShot(2000, VibrationEffect.DEFAULT_AMPLITUDE));
+                vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
             }
         }
+        selectedLetters.clear();
+    }
+
+    private String getSelectedWord() {
+        StringBuilder word = new StringBuilder();
+        for (TextView letterView : selectedLetters) {
+            word.append(letterView.getText().toString());
+        }
+        return word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
     }
 
     private void highlightWord(String word) {
-        // Highlight word in the grid (set border or background to indicate correct word)
-        // Logic for highlighting correct word in the grid
+        for (TextView letterView : selectedLetters) {
+            letterView.setBackgroundResource(R.drawable.selected_cell_border); // Highlight the cells of a correct word
+        }
     }
 
     private void strikeWordInWordList(String word) {
-        // Strike through the word in the word list
         for (int i = 0; i < wordListContainer.getChildCount(); i++) {
             TextView wordTextView = (TextView) wordListContainer.getChildAt(i);
             if (wordTextView.getText().toString().equals(word)) {
@@ -220,7 +350,6 @@ public class Word_Search_Game extends AppCompatActivity {
 
     private void checkGameCompletion() {
         if (foundWords.size() == wordsToFind.size()) {
-            // Show dialog when game is complete
             showGameCompletionDialog();
         }
     }
@@ -230,16 +359,27 @@ public class Word_Search_Game extends AppCompatActivity {
                 .setTitle("Game Over")
                 .setMessage("Congratulations, you found all the words!")
                 .setPositiveButton("Start New Game", (dialog, which) -> restartGame())
-                .setNegativeButton("Go Back", (dialog, which) -> finish())
+                .setNegativeButton("Go Back", (dialog, which) -> {
+                    Intent mainintent=new Intent(Word_Search_Game.this,MainActivity.class);
+                    startActivity(mainintent);
+                    finish();
+                })
                 .show();
     }
 
     private void restartGame() {
-        // Logic to reset the game
+        // Clear found words and selected letters
         foundWords.clear();
         selectedLetters.clear();
+
+        // Regenerate the word search grid
         generateWordSearch();
+        Collections.shuffle(words);
+        wordsToFind.clear();
+        wordsToFind = new ArrayList<>(words.subList(0, 5));
         fillGridWithWordsAndRandomLetters(wordsToFind);
+
+        // Reset word list display
         wordListContainer.removeAllViews();
         for (String word : wordsToFind) {
             TextView textView = new TextView(this);
@@ -247,16 +387,22 @@ public class Word_Search_Game extends AppCompatActivity {
             textView.setTextSize(18);
             textView.setGravity(Gravity.CENTER);
             textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+            // Optional padding and margins
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            layoutParams.setMargins(20, 20, 20, 20);
+            textView.setLayoutParams(layoutParams);
+
             wordListContainer.addView(textView);
         }
+
+        // Clear the GridLayout for a fresh start
+        gridLayout.removeAllViews();
+        int gridSize = (int) Math.sqrt(grid.length); // Assuming square grid
+        populateGridLayout(gridSize);
     }
 
-    // Get the selected word from the list of selected letters
-    private String getSelectedWord() {
-        StringBuilder word = new StringBuilder();
-        for (TextView letterView : selectedLetters) {
-            word.append(letterView.getText().toString());
-        }
-        return word.toString();
-    }
 }

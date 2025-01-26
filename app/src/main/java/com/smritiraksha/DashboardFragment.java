@@ -78,7 +78,7 @@ public class DashboardFragment extends Fragment implements SensorEventListener {
         wordSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent wrdsrch= new Intent(requireContext(), Word_Search_Game.class);
+                Intent wrdsrch= new Intent(requireContext(), Wordsearchsplash.class);
                 startActivity(wrdsrch);
             }
         });
