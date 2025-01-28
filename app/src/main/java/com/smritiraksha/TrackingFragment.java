@@ -65,11 +65,10 @@ import java.util.Locale;
 public class TrackingFragment extends Fragment implements OnMapReadyCallback, RouteListener {
 
     private static final int LOCATION_REQUEST_CODE = 101;
-
     private MapView mapView;
     private GoogleMap googleMap;
     private EditText searchBar, destinationInput, sourceInput;
-    private LatLng srcLoc, destLoc;
+    private LatLng srcLoc, destLoc,dstloc,userloc;
     private  LatLng testSource,testDestination;
     private ArrayList<Polyline> polylines = new ArrayList<>();
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -103,9 +102,7 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
         destinationInput.addTextChangedListener(textWatcher);
 
         searchBar.addTextChangedListener(createSearchBarWatcher());
-        testSource = new LatLng(37.7749, -122.4194); // San Francisco
-        testDestination = new LatLng(34.0522, -118.2437); // Los Angeles
-        getRoutePoints(testSource, testDestination);
+        getRoutePoints(srcLoc,destLoc);
         return view;
     }
 
@@ -119,6 +116,13 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
         googleMap.setMyLocationEnabled(true);
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         fetchLocation();
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(@NonNull LatLng latLng) {
+                dstloc=latLng;
+                googleMap.addMarker(new MarkerOptions().position(latLng).title("Selected Location"));
+            }
+        });
     }
 
     private boolean isLocationEnabled() {
@@ -171,6 +175,7 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
             if (location != null) {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                userloc=latLng;
                 CameraPosition camera = new CameraPosition.Builder().target(latLng).zoom(12).build();
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(camera));
             } else {
@@ -276,6 +281,7 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
                         if (searchLocation != null) {
                             updateMapWithMarker(searchLocation, "Search: " + searchText);
                         } else {
+
                             Toast.makeText(getContext(), "Location not found: " + searchText, Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -288,6 +294,7 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
             public void afterTextChanged(Editable s) {}
         };
     }
+
 
     private LatLng getLatLngFromAddress(String address) {
         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
@@ -306,19 +313,41 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
     public void getRoutePoints(LatLng start, LatLng end) {
         if (start == null || end == null) {
             Toast.makeText(getContext(), "Unable to get location", Toast.LENGTH_LONG).show();
-            return;
+            Log.e("TAG", " latlngs are null");
+        } else {
+            RouteDrawing routeDrawing = new RouteDrawing.Builder()
+                    .context(getContext())  // pass your activity or fragment's context
+                    .travelMode(AbstractRouting.TravelMode.DRIVING)
+                    .withListener(this).alternativeRoutes(true)
+                    .waypoints(start, end)
+                    .build();
+            routeDrawing.execute();
         }
-
-        RouteDrawing routeDrawing = new RouteDrawing.Builder()
-                .context(getContext())
-                .travelMode(AbstractRouting.TravelMode.DRIVING)
-                .withListener(this)
-                .alternativeRoutes(true)
-                .waypoints(start, end)
-                .build();
-        routeDrawing.execute();
         Log.d("Start Location",start.toString());
         Log.d("End Location",end.toString());
+    }
+
+
+    @Override
+    public void onRouteSuccess(ArrayList<RouteInfoModel> routeInfoModelArrayList, int routeIndexing) {
+        if (polylines != null) {
+            polylines.clear();
+        }
+        PolylineOptions polylineOptions = new PolylineOptions();
+        ArrayList<Polyline> polylines = new ArrayList<>();
+        for (int i = 0; i < routeInfoModelArrayList.size(); i++) {
+            if (i == routeIndexing) {
+                Log.e("TAG", "onRoutingSuccess: routeIndexing" + routeIndexing);
+                polylineOptions.color(Color.BLACK);
+                polylineOptions.width(12);
+                polylineOptions.addAll(routeInfoModelArrayList.get(routeIndexing).getPoints());
+                polylineOptions.startCap(new RoundCap());
+                polylineOptions.endCap(new RoundCap());
+                Polyline polyline = googleMap.addPolyline(polylineOptions);
+                polylines.add(polyline);
+            }
+        }
+
     }
 
     @Override
@@ -336,65 +365,20 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
     }
 
     @Override
-    public void onRouteSuccess(ArrayList<RouteInfoModel> routeInfoModelArrayList, int routeIndexing) {
-        if (routeInfoModelArrayList != null && !routeInfoModelArrayList.isEmpty()) {
-            List<LatLng> points = routeInfoModelArrayList.get(routeIndexing).getPoints();
-            if (points != null) {
-                googleMap.clear();
-                PolylineOptions polylineOptions = new PolylineOptions()
-                        .color(Color.BLUE)
-                        .width(10)
-                        .addAll(points);
-                googleMap.addPolyline(polylineOptions);
-
-                // Adjust the camera to show the entire route
-                LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
-                for (LatLng point : points) {
-                    boundsBuilder.include(point);
-                }
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 100));
-                Toast.makeText(getContext(), "Route Created Successfully!!", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(getContext(), "Failed to fetch route.", Toast.LENGTH_SHORT).show();
-        }
-
+    public void onRouteCancelled() {
+        Toast.makeText(getContext(), "Route calculation cancelled.", Toast.LENGTH_SHORT).show();
     }
-
     private void updateMapWithMarker(LatLng location, String title) {
         if (googleMap != null) {
             googleMap.clear();
             googleMap.addMarker(new MarkerOptions().position(location).title(title));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 12));
         }
+        else {
+            Log.e("MapUpdate", "GoogleMap is null, cannot add marker");
+        }
     }
 
-    @Override
-    public void onRouteCancelled() {
-        Toast.makeText(getContext(), "Route calculation cancelled.", Toast.LENGTH_SHORT).show();
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mapView.onResume();
-    }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        mapView.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
-    }
 }
