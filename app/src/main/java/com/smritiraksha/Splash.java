@@ -32,7 +32,7 @@ public class Splash extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(Splash.this, guidesMainActivity.class);
+                Intent intent = new Intent(Splash.this, select_patients.class);
                 startActivity(intent);
                 finish();
             }

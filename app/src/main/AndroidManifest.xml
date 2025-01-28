@@ -20,6 +20,9 @@
         android:theme="@style/Theme.SmritiRaksha"
         tools:targetApi="31">
         <activity
+            android:name=".select_patients"
+            android:exported="false" />
+        <activity
             android:name=".guidesMainActivity"
             android:exported="false" />
         <activity
@@ -38,8 +41,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name=".guideRegistrationActivity"
             android:exported="false" />
@@ -54,16 +56,10 @@
             android:exported="false" />
         <activity
             android:name=".sudokuSplash"
-            android:exported="false">
-
-        </activity>
-
-        <!-- Sudoku Activity -->
+            android:exported="false"></activity> <!-- Sudoku Activity -->
         <activity
             android:name=".sudoku"
-            android:exported="false" />
-,
-        <!-- Success Activity -->
+            android:exported="false" /> <!-- Success Activity -->
         <activity
             android:name=".SuccessActivity"
             android:exported="false"
