@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -26,6 +26,12 @@
             android:name=".LogicPuzzleActivity"
             android:exported="false" />
         <activity
+            android:name=".Wordsearchsplash"
+            android:exported="false" />
+        <activity
+            android:name=".Word_Search_Game"
+            android:exported="false" />
+        <activity
             android:name=".LogicPuzzleSplash"
             android:exported="false" />
 
@@ -35,6 +41,9 @@
 
         <activity
             android:name=".Doctor_registration"
+            android:exported="false" />
+        <activity
+            android:name=".select_patients"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
