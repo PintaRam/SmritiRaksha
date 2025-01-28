@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -28,16 +27,29 @@ public class guidesMainActivity extends AppCompatActivity {
     private static final String TAG = "guidesMainActivity";
     private DrawerLayout drawerLayout;
     private JSONObject guideDetails;
-    String email = "guide1@gmail.com";
+
+    private String email;
+    private String patientId; // Store the patient ID globally in this activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guides_main);
 
-        // Get Intent data
+        // Retrieve Intent data
         Intent intent = getIntent();
-        email = intent.getStringExtra("userEmail");
+        email = intent.getStringExtra("userEmail"); // Retrieve the email passed to this activity
+        patientId = intent.getStringExtra("PATIENT_ID"); // Retrieve the patient ID from the Intent
+
+        // Debugging Log
+        Log.d(TAG, "Email: " + email + ", Patient ID: " + patientId);
+
+        // Show a toast for testing
+        if (patientId != null && !patientId.isEmpty()) {
+            Toast.makeText(this, "Patient ID: " + patientId, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "No Patient ID found!", Toast.LENGTH_SHORT).show();
+        }
 
         // Initialize DrawerLayout and Profile Button
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -49,37 +61,43 @@ public class guidesMainActivity extends AppCompatActivity {
         // Bottom Navigation setup
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
+            Fragment selectedFragment;
             if (item.getItemId() == R.id.navigation_dashboard) {
-                loadFragment(new DashboardFragmentguide());
+                selectedFragment = new DashboardFragmentguide();
             } else if (item.getItemId() == R.id.navigation_live_tracking) {
-                loadFragment(new tracking_nav());
+                selectedFragment = new tracking_nav();
             } else if (item.getItemId() == R.id.navigation_reminder) {
-                loadFragment(new remainder_guide());
+                selectedFragment = new remainder_guide();
             } else if (item.getItemId() == R.id.navigation_emergency) {
-                loadFragment(new emergency_guide());
+                selectedFragment = new emergency_guide();
             } else {
                 return false; // Stop further handling for invalid IDs
             }
+
+            // Pass Patient ID to Fragment (if needed) and Load it
+            Bundle bundle = new Bundle();
+            bundle.putString("PATIENT_ID", patientId); // Pass the patient ID to the selected fragment
+            selectedFragment.setArguments(bundle);
+
+            loadFragment(selectedFragment);
             drawerLayout.closeDrawer(GravityCompat.START); // Close Drawer
             return true; // Indicate the item was handled
         });
 
         // Default Fragment
         if (savedInstanceState == null) {
-            loadFragment(new DashboardFragmentguide());
+            loadFragment(new DashboardFragmentguide()); // Load Dashboard as default
         }
 
-        // Fetch Guide Details (if needed)
+        // Optionally fetch guide details
         // fetchGuideDetails(email);
     }
 
     // Toggles the profile drawer open or close
     private void toggleProfileDrawer() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            // Close the profile drawer if it's already open
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            // Otherwise, open the profile drawer
             drawerLayout.openDrawer(GravityCompat.START);
         }
     }
