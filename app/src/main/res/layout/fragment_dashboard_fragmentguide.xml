@@ -1,14 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DashboardFragmentguide">
+    android:background="@android:color/white">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-</FrameLayout>
+        <!-- Location Display Box -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/box_with_shadow"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp">
+
+            <!-- Logo on Left -->
+            <ImageView
+                android:id="@+id/location_logo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/baseline_location_on_24"
+                android:contentDescription="Location Icon"
+                android:backgroundTint="#FF6200EE"
+                android:layout_marginEnd="16dp" />
+
+            <!-- Address Text on Right -->
+            <TextView
+                android:id="@+id/current_location_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Fetching location..."
+                android:textSize="16sp"
+                android:gravity="start|center_vertical"
+                android:lineSpacingExtra="4dp"
+                android:textColor="#000000"
+                android:fontFamily="sans-serif-medium" />
+
+        </LinearLayout>
+
+        <!-- Key Metrics Display (Two Rows) -->
+
+        <!-- First Row: Heart Rate and Steps -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <!-- Heart Rate Box -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/box_with_shadow"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <!-- Heart Rate Logo -->
+                <ImageView
+                    android:id="@+id/heart_rate_logo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_hear_rate"
+                    android:contentDescription="Heart Rate Icon"
+                    android:backgroundTint="#FF5722"
+                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="center_horizontal" />
+
+                <TextView
+                    android:id="@+id/heart_rate_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Heart Rate: Fetching..."
+                    android:textSize="16sp"
+                    android:gravity="center_horizontal"
+                    android:textColor="#000000"
+                    android:fontFamily="sans-serif-medium"
+                    android:lineSpacingExtra="4dp" />
+            </LinearLayout>
+
+            <!-- Steps Box -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/box_with_shadow"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <!-- Steps Logo -->
+                <ImageView
+                    android:id="@+id/steps_logo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_steps"
+                    android:contentDescription="Steps Icon"
+                    android:backgroundTint="#4CAF50"
+                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="center_horizontal" />
+
+                <!-- Steps Text -->
+                <TextView
+                    android:id="@+id/steps_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Steps Walked: Fetching..."
+                    android:textSize="16sp"
+                    android:gravity="center_horizontal"
+                    android:textColor="#000000"
+                    android:fontFamily="sans-serif-medium"
+                    android:lineSpacingExtra="4dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Second Row: Sleep Duration and Weight -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <!-- Sleep Duration Box -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/box_with_shadow"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <!-- Sleep Logo -->
+                <ImageView
+                    android:id="@+id/sleep_logo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_sleep"
+                    android:contentDescription="Sleep Icon"
+                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="center_horizontal" />
+
+                <!-- Sleep Text -->
+                <TextView
+                    android:id="@+id/sleep_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sleep Duration: Fetching..."
+                    android:textSize="16sp"
+                    android:gravity="center_horizontal"
+                    android:textColor="#000000"
+                    android:fontFamily="sans-serif-medium"
+                    android:lineSpacingExtra="4dp" />
+            </LinearLayout>
+
+            <!-- Weight Box -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/box_with_shadow"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <!-- Weight Logo -->
+                <ImageView
+                    android:id="@+id/weight_logo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_weight"
+                    android:contentDescription="Weight Icon"
+                    android:backgroundTint="#FFC107"
+                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="center_horizontal" />
+
+                <!-- Weight Text -->
+                <TextView
+                    android:id="@+id/weight_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weight: Fetching..."
+                    android:textSize="16sp"
+                    android:gravity="center_horizontal"
+                    android:textColor="#000000"
+                    android:fontFamily="sans-serif-medium"
+                    android:lineSpacingExtra="4dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
