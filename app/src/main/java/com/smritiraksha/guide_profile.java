@@ -1,64 +1,62 @@
 package com.smritiraksha;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link guide_profile#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.textview.MaterialTextView;
+
 public class guide_profile extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public guide_profile() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment guide_profile.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static guide_profile newInstance(String param1, String param2) {
-        guide_profile fragment = new guide_profile();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the fragment_guide_profile layout.
+        View rootView = inflater.inflate(R.layout.fragment_guide_profile, container, false);
+
+        // Get the data passed as arguments.
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+            String guideId = getArguments().getString("guideId", "No Guide ID");
+            String guideName = getArguments().getString("guideName", "No Name");
+            String guideContact = getArguments().getString("guideContact", "No Contact");
+            String patientName = getArguments().getString("patientName", "No Patient Name");
+            String patientId = getArguments().getString("patientId", "No Patient ID");
+            String contact = getArguments().getString("contact", "No Contact");
+            String age = getArguments().getString("age", "No Age");
+            String gender = getArguments().getString("gender", "No Gender");
+            String email = getArguments().getString("email", "No Email");
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_guide_profile, container, false);
+            // Log the guide details for debugging.
+            Log.d("GuideProfile", "Guide ID: " + guideId);  // Print the guide ID in log.
+
+            // Display the guide and patient information in MaterialCardView's TextViews.
+            MaterialTextView guideIdTextView = rootView.findViewById(R.id.guide_id); // Add a TextView to display guide ID
+            MaterialTextView guideNameTextView = rootView.findViewById(R.id.guide_name);
+            MaterialTextView guideContactTextView = rootView.findViewById(R.id.guide_contact);
+            MaterialTextView patientNameTextView = rootView.findViewById(R.id.patient_name);
+            MaterialTextView patientIdTextView = rootView.findViewById(R.id.patient_id);
+            MaterialTextView patientContactTextView = rootView.findViewById(R.id.patient_contact);
+            MaterialTextView patientAgeTextView = rootView.findViewById(R.id.patient_age);
+            MaterialTextView patientGenderTextView = rootView.findViewById(R.id.patient_gender);
+            MaterialTextView patientEmailTextView = rootView.findViewById(R.id.patient_email);
+
+            // Setting the TextViews with the passed values.
+            guideIdTextView.setText("Guide ID: " + guideId);  // Display Guide ID
+            guideNameTextView.setText("Guide: " + guideName);
+            guideContactTextView.setText("Guide Contact: " + guideContact);
+            patientNameTextView.setText("Patient: " + patientName);
+            patientIdTextView.setText("Patient ID: " + patientId);
+            patientContactTextView.setText("Patient Contact: " + contact);
+            patientAgeTextView.setText("Age: " + age);
+            patientGenderTextView.setText("Gender: " + gender);
+            patientEmailTextView.setText("Email: " + email);
+        }
+
+        return rootView;
     }
 }
