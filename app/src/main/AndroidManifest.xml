@@ -31,17 +31,14 @@
             android:exported="false" />
         <activity
             android:name=".Word_Search_Game"
+            android:exported="false"/>
+        <activity
             android:name=".guidesMainActivity"
             android:exported="false" />
         <activity
             android:name=".LogicPuzzleActivity"
             android:exported="false" />
-        <activity
-            android:name=".Wordsearchsplash"
-            android:exported="false" />
-        <activity
-            android:name=".Word_Search_Game"
-            android:exported="false" />
+
         <activity
             android:name=".LogicPuzzleSplash"
             android:exported="false" />
