@@ -27,14 +27,14 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private DrawerLayout drawerLayout;
     private JSONObject userDetails;
-    String email =  "";
+    String email =  "patient1@gmail.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent = getIntent();
-        email = intent.getStringExtra("userEmail");
+//        Intent intent = getIntent();
+//        email = intent.getStringExtra("userEmail");
         drawerLayout = findViewById(R.id.drawer_layout);
         ImageButton profileButton = findViewById(R.id.btn_profile);
 
