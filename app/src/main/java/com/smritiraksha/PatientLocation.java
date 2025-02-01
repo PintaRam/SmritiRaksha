@@ -73,7 +73,6 @@ public class PatientLocation extends AppCompatActivity {
         locationList.add(new LocationModel(3, "Pharmacy 123", "2025-01-17 09:00 AM"));
         locationList.add(new LocationModel(4, "Park Downtown", "2025-01-18 11:00 AM"));
         locationList.add(new LocationModel(5, "Supermarket 456", "2025-01-19 03:45 PM"));
-
         // Notify adapter that data has changed
         locationAdapter.notifyDataSetChanged();
     }
