@@ -75,7 +75,6 @@
         <activity
             android:name=".sudoku"
             android:exported="false" />
-,
         
       
         <activity
