@@ -1,104 +1,155 @@
 package com.smritiraksha;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-
+import androidx.fragment.app.FragmentTransaction;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class guidesMainActivity extends AppCompatActivity {
 
-    private static final String TAG = "guidesMainActivity";
+    private static final String TAG = "GuidesMainActivity";
     private DrawerLayout drawerLayout;
-    private JSONObject guideDetails;
-    String email = "guide1@gmail.com";
+    private BottomNavigationView bottomNavigationView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guides_main);
 
-        // Get Intent data
-        Intent intent = getIntent();
-        email = intent.getStringExtra("userEmail");
-
-        // Initialize DrawerLayout and Profile Button
+        // Initialize Views
         drawerLayout = findViewById(R.id.drawer_layout);
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) ImageButton profileButton = findViewById(R.id.btn_profile);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        ImageButton btnProfile = findViewById(R.id.btn_profile);
 
-        // Set click listener to toggle the profile drawer
-        profileButton.setOnClickListener(view -> toggleProfileDrawer());
+        // Set default fragment (Guide Dashboard)
+        loadFragment(new DashboardFragmentguide());
 
-        // Bottom Navigation setup
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
-        bottomNavigation.setOnNavigationItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.navigation_dashboard) {
-                loadFragment(new DashboardFragmentguide());
-            } else if (item.getItemId() == R.id.navigation_live_tracking) {
-                loadFragment(new tracking_nav());
-            } else if (item.getItemId() == R.id.navigation_reminder) {
-                loadFragment(new remainder_guide());
-            } else if (item.getItemId() == R.id.navigation_emergency) {
-                loadFragment(new emergency_guide());
-            } else {
-                return false; // Stop further handling for invalid IDs
+        // Bottom Navigation Click Listener
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+
+                if (item.getItemId() == R.id.navigation_dashboard) {
+                    selectedFragment = new DashboardFragmentguide();
+                } else if (item.getItemId() == R.id.navigation_live_tracking) {
+                    selectedFragment = new tracking_nav();
+                } else if (item.getItemId() == R.id.navigation_reminder) {
+                    selectedFragment = new remainder_guide();
+                } else if (item.getItemId() == R.id.navigation_emergency) {
+                    selectedFragment = new emergency_guide();
+                }
+
+                if (selectedFragment != null) {
+                    loadFragment(selectedFragment);
+                    return true;
+                }
+                return false;
             }
-            drawerLayout.closeDrawer(GravityCompat.START); // Close Drawer
-            return true; // Indicate the item was handled
         });
 
-        // Default Fragment
-        if (savedInstanceState == null) {
-            loadFragment(new DashboardFragmentguide());
-        }
+        // Click Listener for Profile Button
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleProfileDrawer();
+            }
+        });
 
-        // Fetch Guide Details (if needed)
-        // fetchGuideDetails(email);
-    }
-
-    // Toggles the profile drawer open or close
-    private void toggleProfileDrawer() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            // Close the profile drawer if it's already open
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            // Otherwise, open the profile drawer
-            drawerLayout.openDrawer(GravityCompat.START);
-        }
+        // Fetch User and Patient Details
+        fetchPatientAndGuideDetails("PT01Sri", "guide2@gmail.com");
     }
 
     private void loadFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.commit();
     }
 
-    /**
-     * Safely retrieves a JSON value by key, returning an empty string if the key is missing or invalid.
-     */
-    private String getSafeJsonValue(JSONObject jsonObject, String key) {
-        try {
-            return jsonObject.has(key) ? jsonObject.getString(key) : "";
-        } catch (JSONException e) {
-            Log.e(TAG, "Missing or Invalid Key: " + key, e);
-            return "";
+    private void fetchPatientAndGuideDetails(String patientId, String guideEmail) {
+        String url = Constants.FETCH_PATIENT_GUIDES_URL + "?patient_id=" + patientId + "&guide_email=" + guideEmail;
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, "Response: " + response.toString());
+                        try {
+                            if (response.has("success") && response.getBoolean("success")) {
+                                if (response.has("data")) {
+                                    JSONObject data = response.getJSONObject("data");
+                                    String guideId = data.optString("guide_id", "N/A");
+                                    String guideName = data.optString("guide_name", "N/A");
+                                    String guideContact = data.optString("guide_contact", "N/A");
+                                    String patientName = data.optString("patient_name", "N/A");
+                                    String patientId = data.optString("patient_id", "N/A");
+                                    String contact = data.optString("contact", "N/A");
+                                    String age = String.valueOf(data.optInt("age", 0));
+                                    String gender = data.optString("gender", "N/A");
+                                    String email = data.optString("email", "N/A");
+
+                                    openProfileFragment(guideId, guideName, guideContact,
+                                            patientName, patientId, contact, age, gender, email);
+                                }
+                            } else {
+                                Log.e(TAG, "No data found");
+                            }
+                        } catch (JSONException e) {
+                            Log.e(TAG, "JSON Parsing Error", e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Request Error", error);
+            }
+        });
+
+        queue.add(request);
+    }
+
+    private void openProfileFragment(String guideId, String guideName, String guideContact, String patientName, String patientId,
+                                     String contact, String age, String gender, String email) {
+        guide_profile guideProfileFragment = new guide_profile();
+        Bundle bundle = new Bundle();
+        bundle.putString("guideId", guideId);
+        bundle.putString("guideName", guideName);
+        bundle.putString("guideContact", guideContact);
+        bundle.putString("patientName", patientName);
+        bundle.putString("patientId", patientId);
+        bundle.putString("contact", contact);
+        bundle.putString("age", age);
+        bundle.putString("gender", gender);
+        bundle.putString("email", email);
+        guideProfileFragment.setArguments(bundle);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.profile_drawer, guideProfileFragment);
+        transaction.commit();
+    }
+
+    private void toggleProfileDrawer() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            drawerLayout.openDrawer(GravityCompat.START);
         }
     }
 }

@@ -38,7 +38,7 @@
                 android:id="@+id/app_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="|| मार्गदर्शन ||"
+                android:text="@string/app_name"
                 android:textSize="20sp"
                 android:textColor="@android:color/white"
                 android:layout_gravity="center|start"
