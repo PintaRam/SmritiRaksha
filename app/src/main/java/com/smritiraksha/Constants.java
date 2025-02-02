@@ -6,7 +6,7 @@ public class Constants {
 
    //root server url
 
-    private static  String Root_URL = "https://2600-2409-408c-8eca-992-3163-edda-3254-d305.ngrok-free.app/android/v1/";
+    private static  String Root_URL = "https://d986-2409-408c-8eca-992-d8c-4761-34f0-6c1f.ngrok-free.app/android/v1/";
 
     //registration
     public  static  String URL_REGISTER = Root_URL + "registerUser.php";
@@ -23,5 +23,7 @@ public class Constants {
     public static String Remainder_URL=Root_URL+"Send_medicine.php";
     public  static  String getPatients = Root_URL + "getPatients.php";
     public static  String FETCH_PATIENT_GUIDES_URL = Root_URL+"fetch_patient_guide.php";
+    public static  String CHECK_EMERGENCY = Root_URL+"checkEmergency.php";
+    public static  String TRIGGER_EMERGENCY= Root_URL+"triggerEmergencyAlert.php";
 
 }

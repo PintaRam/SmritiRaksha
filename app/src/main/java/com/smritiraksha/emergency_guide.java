@@ -5,62 +5,60 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.button.MaterialButton;
-import android.content.Intent;
-import android.net.Uri;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class emergency_guide extends Fragment {
 
     private MaterialButton btnEmergencyCall;
-    private MediaPlayer mediaPlayer;
+    private static final String PATIENT_EMAIL = "patient1@gmail.com"; // Patient Email
+    private static final String EMERGENCY_API_URL = Constants.TRIGGER_EMERGENCY;
 
-    public emergency_guide() {
-        // Required empty public constructor
-    }
+    public emergency_guide() { }
 
     public static emergency_guide newInstance() {
         return new emergency_guide();
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_emergency_guide, container, false);
-
-        // Initialize button
         btnEmergencyCall = rootView.findViewById(R.id.btn_emergency_call);
 
-        // Emergency Button Click
         btnEmergencyCall.setOnClickListener(view -> {
-            playSosSound();
-            callForHelp();
+            sendEmergencyAlert("trigger");
         });
 
         return rootView;
     }
 
-    // Play SOS Sound
-    private void playSosSound() {
-        if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer.create(getContext(), R.raw.sos_sound);
-        }
-        mediaPlayer.start();
-    }
+    private void sendEmergencyAlert(String action) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, EMERGENCY_API_URL,
+                response -> Toast.makeText(getContext(), "Emergency " + action + "ed!", Toast.LENGTH_SHORT).show(),
+                error -> Toast.makeText(getContext(), "Error sending emergency alert", Toast.LENGTH_SHORT).show()) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("patient_email", PATIENT_EMAIL);
+                params.put("action", action);
+                return params;
+            }
+        };
 
-    // Trigger Emergency Call
-    private void callForHelp() {
-        String emergencyNumber = "911"; // Replace with your emergency contact number
-        Intent callIntent = new Intent(Intent.ACTION_DIAL);
-        callIntent.setData(Uri.parse("tel:" + emergencyNumber));
-        startActivity(callIntent);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
+        Volley.newRequestQueue(requireContext()).add(stringRequest);
     }
 }

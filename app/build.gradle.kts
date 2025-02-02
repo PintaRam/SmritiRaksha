@@ -56,6 +56,8 @@ dependencies {
     implementation ("com.github.dangiashish:Google-Direction-Api:1.6")
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("androidx.work:work-runtime:2.9.0")
+    implementation("com.google.guava:guava:31.0.1-android")
 
 
 }

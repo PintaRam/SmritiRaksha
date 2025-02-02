@@ -1,6 +1,8 @@
 package com.smritiraksha;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -22,19 +26,21 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.TimeUnit;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private DrawerLayout drawerLayout;
     private JSONObject userDetails;
-    String email =  "patient1@gmail.com";
+    private MediaPlayer mediaPlayer;
+    private String email = "patient1@gmail.com"; // Replace dynamically if needed
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Intent intent = getIntent();
-//        email = intent.getStringExtra("userEmail");
+
         drawerLayout = findViewById(R.id.drawer_layout);
         ImageButton profileButton = findViewById(R.id.btn_profile);
 
@@ -62,7 +68,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Fetch User Details
-        fetchUserDetails(email); // Replace with dynamic email
+        fetchUserDetails(email);
+
+        // Start Emergency Polling
+        startEmergencyPolling();
     }
 
     private void fetchUserDetails(String email) {
@@ -139,6 +148,42 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             Log.e(TAG, "Missing or Invalid Key: " + key, e);
             return "";
+        }
+    }
+
+    /**
+     * Starts background polling to check for emergency status every 5 seconds.
+     */
+    private void startEmergencyPolling() {
+        PeriodicWorkRequest request = new PeriodicWorkRequest.Builder(
+                EmergencyCheckWorker.class, 5, TimeUnit.SECONDS)
+                .build();
+
+        WorkManager.getInstance(this).enqueue(request);
+    }
+
+    /**
+     * Plays emergency alarm sound.
+     */
+    public void playEmergencyAlarm(Context context) {
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(context, R.raw.sos_sound);
+            mediaPlayer.setLooping(true);
+        }
+
+        if (!mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
+    }
+
+    /**
+     * Stops emergency alarm sound.
+     */
+    public void stopEmergencyAlarm() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 }
