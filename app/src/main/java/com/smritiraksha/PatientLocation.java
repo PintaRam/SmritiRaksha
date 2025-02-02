@@ -61,7 +61,6 @@ public class PatientLocation extends AppCompatActivity {
         recyclerView.setAdapter(locationAdapter);
         addSampleLocations();
 
-
         //Need to update back part after that we need to work on fetchlocation()
         // fetchLocations();
     }

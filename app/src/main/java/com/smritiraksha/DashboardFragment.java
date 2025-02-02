@@ -11,11 +11,13 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import com.smritiraksha.Constants;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,13 +25,19 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import  java.util.Map;
 
 public class DashboardFragment extends Fragment implements SensorEventListener {
     private FusedLocationProviderClient fusedLocationClient;
@@ -43,6 +51,11 @@ public class DashboardFragment extends Fragment implements SensorEventListener {
 
     private int stepsWalked = 0;
     private float currentHeartRate = 0;
+    private Location lastLocation = null; // Store the last known location
+    private static final float DISTANCE_THRESHOLD = 50; // 50 meters
+    private static final long LOCATION_UPDATE_INTERVAL = 100000; // 5 minutes in milliseconds
+
+    private final Handler locationHandler = new Handler();
 
     @Nullable
     @Override
@@ -50,6 +63,14 @@ public class DashboardFragment extends Fragment implements SensorEventListener {
         // Inflate the layout for this fragment
         return  inflater.inflate(R.layout.fragment_dashboard, container, false);
     }
+
+    private final Runnable locationUpdateTask = new Runnable() {
+        @Override
+        public void run() {
+            fetchCurrentLocation(); // Fetch and process location
+            locationHandler.postDelayed(this, LOCATION_UPDATE_INTERVAL); // Schedule next update
+        }
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +89,9 @@ public class DashboardFragment extends Fragment implements SensorEventListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Start periodic location updates
+        locationHandler.postDelayed(locationUpdateTask, LOCATION_UPDATE_INTERVAL);
 
         // Link TextViews
         currentLocationTextView = view.findViewById(R.id.current_location_text);
@@ -129,12 +153,52 @@ public class DashboardFragment extends Fragment implements SensorEventListener {
                         Location location = task.getResult();
                         if (location != null) {
                             // Convert latitude and longitude to address
-                            getAddressFromLocation(location);
+                            checkAndStoreLocation(location);
+                            //getAddressFromLocation(location);
                         } else {
                             currentLocationTextView.setText("Unable to fetch location");
                         }
                     }
                 });
+    }
+
+    private void checkAndStoreLocation(Location newLocation) {
+        if (lastLocation == null || lastLocation.distanceTo(newLocation) > DISTANCE_THRESHOLD) {
+            // Update last location
+            lastLocation = newLocation;
+
+            // Convert latitude and longitude to address (optional)
+            getAddressFromLocation(newLocation);
+
+            // Store location in the database
+            sendLocationToDatabase(newLocation);
+        }
+    }
+
+    private void sendLocationToDatabase(Location location) {
+        // Replace with your server URL
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.PATIENT_LOC,
+                response -> {
+                    // Handle success
+                    currentLocationTextView.setText("Location updated in database");
+                },
+                error -> {
+                    // Handle error
+                    currentLocationTextView.setText("Error updating location: " + error.getMessage());
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("patient_id", "123"); // Replace with actual patient ID
+                params.put("latitude", String.valueOf(location.getLatitude()));
+                params.put("longitude", String.valueOf(location.getLongitude()));
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
     }
 
     private void getAddressFromLocation(Location location) {
