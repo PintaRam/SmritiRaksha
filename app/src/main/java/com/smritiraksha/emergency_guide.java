@@ -1,64 +1,66 @@
 package com.smritiraksha;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.fragment.app.Fragment;
+import com.google.android.material.button.MaterialButton;
+import android.content.Intent;
+import android.net.Uri;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link emergency_guide#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class emergency_guide extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private MaterialButton btnEmergencyCall;
+    private MediaPlayer mediaPlayer;
 
     public emergency_guide() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment emergency_guide.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static emergency_guide newInstance(String param1, String param2) {
-        emergency_guide fragment = new emergency_guide();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static emergency_guide newInstance() {
+        return new emergency_guide();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_emergency_guide, container, false);
+
+        // Initialize button
+        btnEmergencyCall = rootView.findViewById(R.id.btn_emergency_call);
+
+        // Emergency Button Click
+        btnEmergencyCall.setOnClickListener(view -> {
+            playSosSound();
+            callForHelp();
+        });
+
+        return rootView;
+    }
+
+    // Play SOS Sound
+    private void playSosSound() {
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(getContext(), R.raw.sos_sound);
         }
+        mediaPlayer.start();
+    }
+
+    // Trigger Emergency Call
+    private void callForHelp() {
+        String emergencyNumber = "911"; // Replace with your emergency contact number
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+        callIntent.setData(Uri.parse("tel:" + emergencyNumber));
+        startActivity(callIntent);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_emergency_guide, container, false);
+    public void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 }
