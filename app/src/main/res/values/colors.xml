@@ -17,4 +17,6 @@
     <color name="purple_50">#F3E5F5</color>  <!-- Light purple background -->
     <color name="teal_700">#00796B</color>
     <color name="gray">#CCCCCC</color>
+    <color name="red_500">#F44336</color>
+    <color name="red_700">#D32F2F</color>
 </resources>
