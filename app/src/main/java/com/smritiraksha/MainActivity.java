@@ -1,11 +1,14 @@
 package com.smritiraksha;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private JSONObject userDetails;
     private MediaPlayer mediaPlayer;
     private String email = "patient1@gmail.com"; // Replace dynamically if needed
+    private EmergencyReceiver emergencyReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +76,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Start Emergency Polling
         startEmergencyPolling();
+
+        // Register the emergency receiver
+        emergencyReceiver = new EmergencyReceiver();
+        IntentFilter filter = new IntentFilter("com.smritiraksha.EMERGENCY_ALERT");
+        registerReceiver(emergencyReceiver, filter);
     }
 
     private void fetchUserDetails(String email) {
@@ -156,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void startEmergencyPolling() {
         PeriodicWorkRequest request = new PeriodicWorkRequest.Builder(
-                EmergencyCheckWorker.class, 5, TimeUnit.SECONDS)
+                EmergencyCheckWorker.class, 1, TimeUnit.SECONDS)
                 .build();
 
         WorkManager.getInstance(this).enqueue(request);
@@ -166,13 +175,16 @@ public class MainActivity extends AppCompatActivity {
      * Plays emergency alarm sound.
      */
     public void playEmergencyAlarm(Context context) {
+        // Check if mediaPlayer is null, create and start it
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer.create(context, R.raw.sos_sound);
-            mediaPlayer.setLooping(true);
+            mediaPlayer.setLooping(true);  // Loop the sound
         }
 
+        // Start the sound only if it's not already playing
         if (!mediaPlayer.isPlaying()) {
             mediaPlayer.start();
+            Log.d(TAG, "Emergency alarm started.");
         }
     }
 
@@ -184,6 +196,28 @@ public class MainActivity extends AppCompatActivity {
             mediaPlayer.stop();
             mediaPlayer.release();
             mediaPlayer = null;
+            Log.d(TAG, "Emergency alarm stopped.");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(emergencyReceiver); // Unregister the receiver to avoid memory leaks
+    }
+
+    /**
+     * Broadcast receiver to handle emergency alerts.
+     */
+    private class EmergencyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean isEmergency = intent.getBooleanExtra("isEmergency", false);
+            if (isEmergency) {
+                playEmergencyAlarm(context); // Trigger alarm if emergency is true
+            } else {
+                stopEmergencyAlarm(); // Stop alarm if emergency is false
+            }
         }
     }
 }
