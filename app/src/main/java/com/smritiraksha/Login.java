@@ -26,6 +26,7 @@ public class Login extends AppCompatActivity {
     private MaterialAutoCompleteTextView roleAutoCompleteTextView;
     private TextInputEditText emailEditText, passwordEditText;
     String email = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,29 +47,23 @@ public class Login extends AppCompatActivity {
                 roleAutoCompleteTextView.showDropDown();
             }
         });
+
         // Register button click listener
-        findViewById(R.id.registerButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateFields()) {
-                    // Start the login request in a separate AsyncTask
-                    new LoginTask().execute(
-                            emailEditText.getText().toString().trim(),
-                            passwordEditText.getText().toString().trim(),
-                            roleAutoCompleteTextView.getText().toString().trim()  // Pass the role
-                    );
-                }
+        findViewById(R.id.registerButton).setOnClickListener(v -> {
+            if (validateFields()) {
+                new LoginTask().execute(
+                        emailEditText.getText().toString().trim(),
+                        passwordEditText.getText().toString().trim(),
+                        roleAutoCompleteTextView.getText().toString().trim()  // Pass the role
+                );
             }
         });
 
         // Login TextView (used to redirect to the Registration activity)
-        findViewById(R.id.loginTextView).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(Login.this, "Redirecting to Register...", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(Login.this, MainActivity.class);
-                startActivity(intent);
-            }
+        findViewById(R.id.loginTextView).setOnClickListener(v -> {
+            Toast.makeText(Login.this, "Redirecting to Register...", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Login.this, MainActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -82,7 +77,7 @@ public class Login extends AppCompatActivity {
         }
 
         // Check Email
-         email = emailEditText.getText().toString().trim();
+        email = emailEditText.getText().toString().trim();
         if (TextUtils.isEmpty(email)) {
             emailEditText.setError("Email is required.");
             return false;
@@ -111,7 +106,7 @@ public class Login extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String email = params[0];
             String password = params[1];
-            String role = params[2];  // Role passed from the UI
+            String role = params[2];
 
             try {
                 // Set up the connection
@@ -155,12 +150,30 @@ public class Login extends AppCompatActivity {
                     boolean error = jsonResponse.getBoolean("error");
 
                     if (!error) {
-                        // Successful login, redirect to MainActivity
+                        // Successful login, redirect to role-specific activity
                         String userId = jsonResponse.getString("user_id");
-                        Toast.makeText(Login.this, "Login Successful as " + roleAutoCompleteTextView.getText().toString(), Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(Login.this, MainActivity.class);
+                        String role = roleAutoCompleteTextView.getText().toString();
+
+                        Toast.makeText(Login.this, "Login Successful as " + role, Toast.LENGTH_SHORT).show();
+
+                        Intent intent;
+                        switch (role) {
+                            case "Doctor":
+                                intent = new Intent(Login.this, MainActivity.class);
+                                break;
+                            case "Caretaker":
+                                intent = new Intent(Login.this, guidesMainActivity.class);
+                                break;
+                            case "Patient":
+                                intent = new Intent(Login.this, MainActivity.class);
+                                break;
+                            default:
+                                Toast.makeText(Login.this, "Invalid role. Please try again.", Toast.LENGTH_SHORT).show();
+                                return;
+                        }
+
                         intent.putExtra("userEmail", email);
-                        startActivity(intent);
+                        intent.putExtra("userId", userId);
                         startActivity(intent);
                         finish(); // Close the login activity
                     } else {

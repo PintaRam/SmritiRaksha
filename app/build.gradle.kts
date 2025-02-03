@@ -43,6 +43,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.constraintlayout:constraintlayout-core:1.0.4")
     implementation("androidx.appcompat:appcompat:1.7.0") // Use the latest version
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.3")
@@ -54,6 +56,8 @@ dependencies {
     implementation ("com.github.dangiashish:Google-Direction-Api:1.6")
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("androidx.work:work-runtime:2.9.0")
+    implementation("com.google.guava:guava:31.0.1-android")
 
 
 }

@@ -4,12 +4,23 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.material.button.MaterialButton;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,52 +29,43 @@ import android.widget.Button;
  */
 public class EmergencyFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private MaterialButton btnEmergencyStop;
+    private static final String PATIENT_EMAIL = "patient1@gmail.com"; // Patient Email
+    private static final String EMERGENCY_API_URL = Constants.TRIGGER_EMERGENCY;
 
-    private String mParam1;
-    private String mParam2;
+    public EmergencyFragment() { }
 
-    public EmergencyFragment() {
-        // Required empty public constructor
+    public static EmergencyFragment newInstance() {
+        return new EmergencyFragment();
     }
 
-    public static EmergencyFragment newInstance(String param1, String param2) {
-        EmergencyFragment fragment = new EmergencyFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_emergency, container, false);
+        btnEmergencyStop = rootView.findViewById(R.id.emergency_button);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_emergency, container, false);
-
-        // Find the button by its ID
-        Button emergencyButton = view.findViewById(R.id.emergency_button);
-
-        // Set the button's onClickListener
-        emergencyButton.setOnClickListener(v -> {
-            // Predefined emergency phone number
-            String emergencyNumber = "1234567890"; // Replace with your desired phone number
-            Intent dialIntent = new Intent(Intent.ACTION_DIAL);
-            dialIntent.setData(Uri.parse("tel:" + emergencyNumber));
-            startActivity(dialIntent);
+        btnEmergencyStop.setOnClickListener(view -> {
+            sendEmergencyAlert("reset");
         });
 
-        return view;
+        return rootView;
+    }
+
+    private void sendEmergencyAlert(String action) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, EMERGENCY_API_URL,
+                response -> Toast.makeText(getContext(), "Emergency " + action + "ed!", Toast.LENGTH_SHORT).show(),
+                error -> Toast.makeText(getContext(), "Error sending emergency alert", Toast.LENGTH_SHORT).show()) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("patient_email", PATIENT_EMAIL);
+                params.put("action", action);
+                return params;
+            }
+        };
+
+        Volley.newRequestQueue(requireContext()).add(stringRequest);
     }
 }
+

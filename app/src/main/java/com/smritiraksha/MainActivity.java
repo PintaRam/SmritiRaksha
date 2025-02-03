@@ -1,9 +1,14 @@
 package com.smritiraksha;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -11,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -22,24 +29,26 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.TimeUnit;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private DrawerLayout drawerLayout;
     private JSONObject userDetails;
-    String email =  "";
+    private MediaPlayer mediaPlayer;
+    private String email = "patient1@gmail.com"; // Replace dynamically if needed
+    private EmergencyReceiver emergencyReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Intent intent = getIntent();
-//        emaeButton = findViewById(R.id.btn_profile);
-//       il = intent.getStringExtra("userEmail");
-        //if u directlu opning mainactivity wihtt login and registrtaion
-        email = "spoorthi.patient@gmail.com";
+
         drawerLayout = findViewById(R.id.drawer_layout);
-        ImageButton profileButton.setOnClickListener(view -> toggleProfileDrawer());
+        ImageButton profileButton = findViewById(R.id.btn_profile);
+
+        profileButton.setOnClickListener(view -> toggleProfileDrawer());
 
         // Bottom Navigation
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -63,7 +72,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Fetch User Details
-        fetchUserDetails(email); // Replace with dynamic email
+        fetchUserDetails(email);
+
+        // Start Emergency Polling
+        startEmergencyPolling();
+
+        // Register the emergency receiver
+        emergencyReceiver = new EmergencyReceiver();
+        IntentFilter filter = new IntentFilter("com.smritiraksha.EMERGENCY_ALERT");
+        registerReceiver(emergencyReceiver, filter);
     }
 
     private void fetchUserDetails(String email) {
@@ -140,6 +157,67 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             Log.e(TAG, "Missing or Invalid Key: " + key, e);
             return "";
+        }
+    }
+
+    /**
+     * Starts background polling to check for emergency status every 5 seconds.
+     */
+    private void startEmergencyPolling() {
+        PeriodicWorkRequest request = new PeriodicWorkRequest.Builder(
+                EmergencyCheckWorker.class, 1, TimeUnit.SECONDS)
+                .build();
+
+        WorkManager.getInstance(this).enqueue(request);
+    }
+
+    /**
+     * Plays emergency alarm sound.
+     */
+    public void playEmergencyAlarm(Context context) {
+        // Check if mediaPlayer is null, create and start it
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(context, R.raw.sos_sound);
+            mediaPlayer.setLooping(true);  // Loop the sound
+        }
+
+        // Start the sound only if it's not already playing
+        if (!mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+            Log.d(TAG, "Emergency alarm started.");
+        }
+    }
+
+    /**
+     * Stops emergency alarm sound.
+     */
+    public void stopEmergencyAlarm() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+            Log.d(TAG, "Emergency alarm stopped.");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(emergencyReceiver); // Unregister the receiver to avoid memory leaks
+    }
+
+    /**
+     * Broadcast receiver to handle emergency alerts.
+     */
+    private class EmergencyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean isEmergency = intent.getBooleanExtra("isEmergency", false);
+            if (isEmergency) {
+                playEmergencyAlarm(context); // Trigger alarm if emergency is true
+            } else {
+                stopEmergencyAlarm(); // Stop alarm if emergency is false
+            }
         }
     }
 }

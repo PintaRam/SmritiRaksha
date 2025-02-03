@@ -1,0 +1,93 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".sudoku">
+
+    <!-- Header -->
+    <TextView
+        android:id="@+id/header_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sudoku for Memory Training"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginTop="16dp" />
+
+    <!-- Scrollable Container -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/header_text"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <!-- Sudoku Grid -->
+            <GridLayout
+                android:id="@+id/sudoku_grid"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_margin="16dp"
+                android:columnCount="9"
+                android:rowCount="9"
+                android:padding="4dp"
+                android:background="@drawable/grid_highlighted_border" />
+
+            <!-- Buttons Container -->
+            <LinearLayout
+                android:id="@+id/button_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_margin="16dp"
+                android:padding="8dp">
+
+                <!-- Reset Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/reset_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reset"
+                    android:backgroundTint="@color/teal_700"
+                    android:textColor="@color/white"
+                    android:padding="12dp"
+                    android:layout_marginEnd="16dp"
+                    app:cornerRadius="16dp"
+                    android:fontFamily="sans-serif-medium" />
+
+                <!-- Check Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/check_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Check"
+                    android:backgroundTint="@color/teal_700"
+                    android:textColor="@color/white"
+                    android:padding="12dp"
+                    app:cornerRadius="16dp"
+                    android:fontFamily="sans-serif-medium" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+    <!-- Lottie Animation -->
+   <com.airbnb.lottie.LottieAnimationView
+       android:id="@+id/success_animation"
+       android:layout_width="200dp"
+       android:layout_height="200dp"
+       android:layout_centerInParent="true"
+       app:lottie_autoPlay="false"
+       app:lottie_loop="false"
+       app:lottie_rawRes="@raw/success_animation"
+       android:visibility="gone" />
+</RelativeLayout>

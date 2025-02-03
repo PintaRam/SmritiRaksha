@@ -4,4 +4,5 @@
     <item android:state_selected="true" android:color="@color/primary_color" />
     <!-- Default state -->
     <item android:color="@color/secondary_color" />
+    
 </selector>
