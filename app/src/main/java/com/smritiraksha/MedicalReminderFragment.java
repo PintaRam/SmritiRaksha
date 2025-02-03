@@ -1,8 +1,10 @@
 package com.smritiraksha;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +12,24 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
 
 import java.util.Calendar;
 import java.util.Locale;
+
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+
 
 public class MedicalReminderFragment extends Fragment {
 
@@ -44,12 +58,27 @@ public class MedicalReminderFragment extends Fragment {
             }
         });
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
+        }
+
         // Start checking for notifications
         startNotificationChecker();
 
         return view;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 101) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("Permission", "Notification permission granted!");
+            } else {
+                Log.e("Permission", "Notification permission denied.");
+            }
+        }
+    }
     private void startNotificationChecker() {
         handler.postDelayed(new Runnable() {
             @Override
@@ -108,8 +137,57 @@ public class MedicalReminderFragment extends Fragment {
         if (textToSpeech != null) {
             textToSpeech.speak(message, TextToSpeech.QUEUE_FLUSH, null, null);
         }
+        showNotification(message);
     }
 
+    private void showNotification(String message) {
+        Context context = getContext();
+        if (context == null) return;
+
+        String channelId = "medical_reminders";  // Unique ID for the channel
+
+        // Create a notification channel (only needed once)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "Medical Reminders",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel.setDescription("Reminds users about their medication and health routine");
+
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+
+        // Create an Intent to open the app when clicked
+        Intent intent = new Intent(context, MainActivity.class); // Change to your main activity
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        // Build the notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(R.drawable.main_logo) // Replace with your app's icon
+                .setContentTitle("Medical Reminder")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)  // Dismiss when clicked
+                .setContentIntent(pendingIntent);
+
+        // Show the notification
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                notificationManager.notify(1, builder.build());
+            }
+        } else {
+            notificationManager.notify(1, builder.build()); // No permission required for older versions
+        }
+        // Unique ID for each notification
+    }
 
     @Override
     public void onDestroy() {
