@@ -33,12 +33,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent = getIntent();
-        email = intent.getStringExtra("userEmail");
+//        Intent intent = getIntent();
+//        emaeButton = findViewById(R.id.btn_profile);
+//       il = intent.getStringExtra("userEmail");
+        //if u directlu opning mainactivity wihtt login and registrtaion
+        email = "spoorthi.patient@gmail.com";
         drawerLayout = findViewById(R.id.drawer_layout);
-        ImageButton profileButton = findViewById(R.id.btn_profile);
-
-        profileButton.setOnClickListener(view -> toggleProfileDrawer());
+        ImageButton profileButton.setOnClickListener(view -> toggleProfileDrawer());
 
         // Bottom Navigation
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);

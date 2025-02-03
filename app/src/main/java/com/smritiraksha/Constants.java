@@ -5,7 +5,7 @@ import java.net.URL;
 public class Constants {
 
    //root server url
-    private static  String Root_URL = "https://f7ef-117-230-161-16.ngrok-free.app/android/v1/";
+    private static  String Root_URL = "https://950e-2409-40f2-1018-175e-d1c5-a231-ace5-2df5.ngrok-free.app/android/v1/";
 
     //registration
     public  static  String URL_REGISTER = Root_URL + "registerUser.php";
