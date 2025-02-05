@@ -131,6 +131,14 @@ public class DashboardFragment extends Fragment implements SensorEventListener {
             Intent intent = new Intent(requireContext(), sudokuSplash.class);
             startActivity(intent);
         });
+
+        Button memPlayButton = view.findViewById(R.id.memory_game_play_button);
+        memPlayButton.setOnClickListener(v -> {
+            // Start LogicPuzzleSplash Activity
+            Intent mintent = new Intent(requireContext(), Patient_Mem_Game.class);
+            startActivity(mintent);
+        });
+
     }
 
     private void fetchCurrentLocation() {
