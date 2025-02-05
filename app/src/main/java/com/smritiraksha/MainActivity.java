@@ -29,6 +29,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+//import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+//import com.smritiraksha.memoryGame.MemoryGameFragment;
+
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        loadFragment(new memoryGameFragment());
 
         drawerLayout = findViewById(R.id.drawer_layout);
         ImageButton profileButton = findViewById(R.id.btn_profile);
@@ -148,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
+
     /**
      * Safely retrieves a JSON value by key, returning an empty string if the key is missing or invalid.
      */
@@ -220,4 +227,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 }
