@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.smritiraksha"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.smritiraksha"
