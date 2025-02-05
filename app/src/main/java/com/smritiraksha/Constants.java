@@ -6,7 +6,7 @@ public class Constants {
 
    //root server url
 
-    private static  String Root_URL = "https://8e19-2409-408c-9406-c043-14b0-7c61-8a32-c075.ngrok-free.app/android/v1/";
+    private static  String Root_URL = "https://69ca-2409-408c-9406-c043-319e-211e-9ea9-36d6.ngrok-free.app/android/v1/";
 
     //registration
     public  static  String URL_REGISTER = Root_URL + "registerUser.php";
