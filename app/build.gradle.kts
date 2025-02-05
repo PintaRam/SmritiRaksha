@@ -40,7 +40,6 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
     implementation(libs.fragment)
-    implementation(libs.annotation.jvm)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -59,6 +58,6 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("androidx.work:work-runtime:2.9.0")
     implementation("com.google.guava:guava:31.0.1-android")
-    implementation("androidx.core:core:1.15.0") // Ensure you have this for notifications
+
 
 }

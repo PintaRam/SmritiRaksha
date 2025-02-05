@@ -152,11 +152,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragmentContainer, fragment);
-        transaction.commit();
     }
+
 
     /**
      * Safely retrieves a JSON value by key, returning an empty string if the key is missing or invalid.
