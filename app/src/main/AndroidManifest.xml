@@ -21,6 +21,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmritiRaksha"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.gms.auth.api.fitness"
+            android:resource="@raw/fitness_client_secrets" />
+
         <activity
             android:name=".Patient_Mem_Game"
             android:exported="false" />

@@ -58,6 +58,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("androidx.work:work-runtime:2.9.0")
     implementation("com.google.guava:guava:31.0.1-android")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.android.gms:play-services-fitness:21.1.0")
 
 
 }
