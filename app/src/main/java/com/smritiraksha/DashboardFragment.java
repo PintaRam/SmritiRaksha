@@ -88,8 +88,17 @@ public class DashboardFragment extends Fragment {
             startActivity(intent);
         });
 
+
         // Request Google Fit permissions and fetch data
         requestGoogleFitPermissions();
+
+        Button memPlayButton = view.findViewById(R.id.memory_game_play_button);
+        memPlayButton.setOnClickListener(v -> {
+            // Start LogicPuzzleSplash Activity
+            Intent mintent = new Intent(requireContext(), Patient_Mem_Game.class);
+            startActivity(mintent);
+        });
+
     }
 
     private void fetchCurrentLocation() {

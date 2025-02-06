@@ -14,35 +14,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 
+import java.util.Random;
+
 public class sudoku extends AppCompatActivity {
 
     private GridLayout sudokuGrid;
     private LottieAnimationView successAnimation;
 
-    // Solution grid and initial puzzle
-    private final int[][] solutionGrid = {
-            {5, 3, 4, 6, 7, 8, 9, 1, 2},
-            {6, 7, 2, 1, 9, 5, 3, 4, 8},
-            {1, 9, 8, 3, 4, 2, 5, 6, 7},
-            {8, 5, 9, 7, 6, 1, 4, 2, 3},
-            {4, 2, 6, 8, 5, 3, 7, 9, 1},
-            {7, 1, 3, 9, 2, 4, 8, 5, 6},
-            {9, 6, 1, 5, 3, 7, 2, 8, 4},
-            {2, 8, 7, 4, 1, 9, 6, 3, 5},
-            {3, 4, 5, 2, 8, 6, 1, 7, 9}
-    };
-
-    private final int[][] puzzleGrid = {
-            {5, 3, 0, 0, 7, 0, 0, 0, 0},
-            {6, 0, 0, 1, 9, 5, 0, 0, 0},
-            {0, 9, 8, 0, 0, 0, 0, 6, 0},
-            {8, 0, 0, 7, 0, 0, 0, 0, 3},
-            {4, 0, 0, 8, 0, 3, 0, 0, 1},
-            {7, 0, 0, 0, 2, 0, 0, 0, 6},
-            {0, 6, 0, 0, 0, 0, 2, 8, 0},
-            {0, 0, 0, 4, 1, 9, 0, 0, 5},
-            {0, 0, 0, 0, 8, 0, 0, 7, 9}
-    };
+    private int[][] solutionGrid = new int[9][9];
+    private int[][] puzzleGrid = new int[9][9];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +32,23 @@ public class sudoku extends AppCompatActivity {
         sudokuGrid = findViewById(R.id.sudoku_grid);
         successAnimation = findViewById(R.id.success_animation);
 
-        // Populate the grid with the puzzle
+        generateNewPuzzle();
         populateGrid();
 
-        // Reset button functionality
-        findViewById(R.id.reset_button).setOnClickListener(v -> resetGrid());
+        findViewById(R.id.reset_button).setOnClickListener(v -> {
+            generateNewPuzzle();
+            populateGrid();
+            if (successAnimation != null) {
+                successAnimation.setVisibility(View.GONE);
+            }
+        });
 
-        // Check button functionality
         findViewById(R.id.check_button).setOnClickListener(v -> checkSolution());
+    }
+
+    private void generateNewPuzzle() {
+        generateFullSudoku(solutionGrid);
+        createPuzzleGrid();
     }
 
     private void populateGrid() {
@@ -89,7 +78,7 @@ public class sudoku extends AppCompatActivity {
         cell.setFilters(new InputFilter[]{new InputFilter.LengthFilter(1)});
         cell.setTextSize(18);
         cell.setBackgroundResource(R.drawable.cell_border);
-        cell.setTag(row + "," + col); // Identify cell by position
+        cell.setTag(row + "," + col);
 
         if (puzzleGrid[row][col] != 0) {
             cell.setText(String.valueOf(puzzleGrid[row][col]));
@@ -97,13 +86,6 @@ public class sudoku extends AppCompatActivity {
         }
 
         return cell;
-    }
-
-    private void resetGrid() {
-        populateGrid();
-        if (successAnimation != null) {
-            successAnimation.setVisibility(View.GONE);
-        }
     }
 
     private void checkSolution() {
@@ -132,7 +114,6 @@ public class sudoku extends AppCompatActivity {
         }
 
         if (isCorrect) {
-            // Navigate to SuccessActivity
             Intent intent = new Intent(sudoku.this, SuccessActivity.class);
             startActivity(intent);
         } else {
@@ -140,5 +121,75 @@ public class sudoku extends AppCompatActivity {
         }
     }
 
-}
+    private void generateFullSudoku(int[][] grid) {
+        fillGrid(grid);
+    }
 
+    private boolean fillGrid(int[][] grid) {
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                if (grid[row][col] == 0) {
+                    for (int num : getShuffledNumbers()) {
+                        if (isValid(grid, row, col, num)) {
+                            grid[row][col] = num;
+                            if (fillGrid(grid)) {
+                                return true;
+                            }
+                            grid[row][col] = 0;
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private int[] getShuffledNumbers() {
+        int[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        Random rand = new Random();
+        for (int i = numbers.length - 1; i > 0; i--) {
+            int index = rand.nextInt(i + 1);
+            int temp = numbers[i];
+            numbers[i] = numbers[index];
+            numbers[index] = temp;
+        }
+        return numbers;
+    }
+
+    private boolean isValid(int[][] grid, int row, int col, int num) {
+        for (int x = 0; x < 9; x++) {
+            if (grid[row][x] == num || grid[x][col] == num) {
+                return false;
+            }
+        }
+
+        int startRow = (row / 3) * 3, startCol = (col / 3) * 3;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (grid[startRow + i][startCol + j] == num) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void createPuzzleGrid() {
+        Random rand = new Random();
+        int cellsToRemove = 40;
+
+        for (int row = 0; row < 9; row++) {
+            System.arraycopy(solutionGrid[row], 0, puzzleGrid[row], 0, 9);
+        }
+
+        while (cellsToRemove > 0) {
+            int row = rand.nextInt(9);
+            int col = rand.nextInt(9);
+            if (puzzleGrid[row][col] != 0) {
+                puzzleGrid[row][col] = 0;
+                cellsToRemove--;
+            }
+        }
+    }
+}

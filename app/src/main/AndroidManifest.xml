@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -8,7 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.BODY_SENSORS" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -25,7 +26,9 @@
             android:resource="@raw/fitness_client_secrets" />
 
         <activity
-
+            android:name=".Patient_Mem_Game"
+            android:exported="false" />
+        <activity
             android:name=".PatientLocation"
             android:exported="false" />
         <activity
@@ -36,14 +39,13 @@
             android:exported="false" />
         <activity
             android:name=".Word_Search_Game"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".guidesMainActivity"
             android:exported="false" />
         <activity
             android:name=".LogicPuzzleActivity"
             android:exported="false" />
-
         <activity
             android:name=".LogicPuzzleSplash"
             android:exported="false" />
@@ -75,13 +77,10 @@
             android:exported="false" />
         <activity
             android:name=".sudokuSplash"
-            android:exported="false" /> 
-        <!-- Sudoku Activity -->
+            android:exported="false" /> <!-- Sudoku Activity -->
         <activity
             android:name=".sudoku"
             android:exported="false" />
-        
-      
         <activity
             android:name=".Splash"
             android:exported="true">
