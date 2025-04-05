@@ -8,9 +8,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,9 +18,11 @@ public class Patient_Mem_Game extends AppCompatActivity {
             R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4,
             R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4
     };
+
     private ImageButton[] buttons;
     private int firstCardIndex = -1, secondCardIndex = -1;
     private boolean isProcessing = false;
+    private boolean[] matchedCards = new boolean[8]; // Tracks matched cards
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,22 +30,24 @@ public class Patient_Mem_Game extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_patient_mem_game);
 
-
         GridLayout gridLayout = findViewById(R.id.gridLayout);
         int numCards = images.length;
         buttons = new ImageButton[numCards];
 
-        // Shuffle images
+        // Shuffle images randomly
         List<Integer> imageList = Arrays.asList(images[0], images[1], images[2], images[3],
                 images[4], images[5], images[6], images[7]);
         Collections.shuffle(imageList);
         for (int i = 0; i < numCards; i++) images[i] = imageList.get(i);
 
-        // Initialize buttons
+        // Initialize buttons (cards)
         for (int i = 0; i < numCards; i++) {
             buttons[i] = new ImageButton(this);
-            buttons[i].setImageResource(R.drawable.card_back);
+            buttons[i].setImageResource(R.drawable.card_back); // Initially all cards face down
             buttons[i].setId(i);
+            buttons[i].setScaleType(ImageButton.ScaleType.CENTER_CROP);
+            buttons[i].setPadding(10, 10, 10, 10);
+
             int finalI = i;
             buttons[i].setOnClickListener(v -> handleCardClick(finalI));
             gridLayout.addView(buttons[i]);
@@ -54,8 +55,9 @@ public class Patient_Mem_Game extends AppCompatActivity {
     }
 
     private void handleCardClick(int index) {
-        if (isProcessing || buttons[index].getTag() != null) return;
-        buttons[index].setImageResource(images[index]);
+        if (isProcessing || matchedCards[index]) return; // Ignore clicks on matched cards
+
+        buttons[index].setImageResource(images[index]); // Show the selected card
 
         if (firstCardIndex == -1) {
             firstCardIndex = index;
@@ -68,20 +70,21 @@ public class Patient_Mem_Game extends AppCompatActivity {
 
     private void checkMatch() {
         if (images[firstCardIndex] == images[secondCardIndex]) {
-            buttons[firstCardIndex].setTag("matched");
-            buttons[secondCardIndex].setTag("matched");
+            matchedCards[firstCardIndex] = true;
+            matchedCards[secondCardIndex] = true;
         } else {
             buttons[firstCardIndex].setImageResource(R.drawable.card_back);
             buttons[secondCardIndex].setImageResource(R.drawable.card_back);
         }
+
         firstCardIndex = -1;
         secondCardIndex = -1;
         isProcessing = false;
 
         // Check if all pairs are found
         boolean allMatched = true;
-        for (ImageButton button : buttons) {
-            if (button.getTag() == null) {
+        for (boolean matched : matchedCards) {
+            if (!matched) {
                 allMatched = false;
                 break;
             }
@@ -90,5 +93,4 @@ public class Patient_Mem_Game extends AppCompatActivity {
             Toast.makeText(this, "Congratulations! You matched all pairs!", Toast.LENGTH_LONG).show();
         }
     }
-
 }
