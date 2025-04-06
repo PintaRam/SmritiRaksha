@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Wordsearchsplash">
+    tools:context=".Patient.Games.Wordsearchsplash">
     <ImageView
         android:id="@+id/imageViewLogo"
         android:layout_width="200dp"

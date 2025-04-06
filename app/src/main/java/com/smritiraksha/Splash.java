@@ -10,6 +10,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.smritiraksha.Patient.MainActivity;
+
 public class Splash extends AppCompatActivity {
 
     @Override
