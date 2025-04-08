@@ -7,6 +7,7 @@
     android:layout_margin="20dp"
     android:orientation="vertical"
     android:background="@color/white"
+
     tools:context=".CareTaker.MedicalSchedule">
         <Button
             android:id="@+id/button"
@@ -19,7 +20,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-   <LinearLayout
+
+    <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:orientation="vertical"
