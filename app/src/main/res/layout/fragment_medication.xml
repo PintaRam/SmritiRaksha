@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Doctor.MedicationFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="20dp"
+        >
+    <!-- Medication Tracker -->
+    <TextView android:text="💊 Medication Tracker" android:textStyle="bold"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:textSize="18sp"
+        android:layout_margin="10dp"
+        />
+
+    <!-- Placeholder for medication list -->
+    <TextView android:text="• Donepezil – Taken\n• Memantine – Missed"
+    android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+    android:layout_width="match_parent"/>
+
+    <!-- Buttons -->
+    <Button android:text="➕ Add Medication"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"/>
+    <Button android:text="✏️ Edit Prescription"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
+    </LinearLayout>
+
+</FrameLayout>

@@ -99,7 +99,7 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
         destinationInput.addTextChangedListener(textWatcher);
 
         searchBar.addTextChangedListener(createSearchBarWatcher());
-        getRoutePoints(srcLoc,destLoc);
+        //getRoutePoints(srcLoc,destLoc);
         return view;
     }
 

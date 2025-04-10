@@ -1,5 +1,7 @@
 package com.smritiraksha.Doctor;
 
+import static android.content.Intent.getIntent;
+
 import android.app.AlertDialog;
 import android.app.usage.ConfigurationStats;
 import android.content.Intent;
