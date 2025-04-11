@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/guide_sched"
-    tools:context=".remainder_guide">
+    tools:context=".CareTaker.remainder_guide">
 
     <LinearLayout
         android:id="@+id/guide_rem"

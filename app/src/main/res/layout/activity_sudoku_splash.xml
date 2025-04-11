@@ -5,7 +5,7 @@
     android:id="@+id/mainsudoku"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LogicPuzzleSplash"
+    tools:context=".Patient.Games.LogicPuzzleSplash"
     android:background="@android:color/holo_purple">
 
     <!-- App Logo -->
