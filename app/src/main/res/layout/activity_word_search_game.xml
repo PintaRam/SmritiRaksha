@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="16dp"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".Word_Search_Game">
+    tools:context=".Patient.Games.Word_Search_Game">
 
     <!-- Title at the top -->
     <LinearLayout

@@ -22,7 +22,7 @@
         android:theme="@style/Theme.SmritiRaksha"
         tools:targetApi="31">
         <activity
-            android:name=".memoryGameSplash"
+            android:name=".Patient.Games.memoryGameSplash"
             android:exported="false" />
 
         <meta-data
@@ -30,28 +30,29 @@
             android:resource="@raw/fitness_client_secrets" />
 
         <activity
-            android:name=".Patient_Mem_Game"
+            android:name=".Patient.Games.Patient_Mem_Game"
             android:exported="false" />
         <activity
-            android:name=".PatientLocation"
+            android:name=".Patient.PatientLocation"
             android:exported="false" />
         <activity
-            android:name=".MedicalSchedule"
+            android:name=".CareTaker.MedicalSchedule"
+            android:exported="false" />
+
+        <activity
+            android:name=".Patient.Games.Wordsearchsplash"
             android:exported="false" />
         <activity
-            android:name=".Wordsearchsplash"
+            android:name=".Patient.Games.Word_Search_Game"
             android:exported="false" />
         <activity
-            android:name=".Word_Search_Game"
+            android:name=".CareTaker.guidesMainActivity"
             android:exported="false" />
         <activity
-            android:name=".guidesMainActivity"
+            android:name=".Patient.Games.LogicPuzzleActivity"
             android:exported="false" />
         <activity
-            android:name=".LogicPuzzleActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LogicPuzzleSplash"
+            android:name=".Patient.Games.LogicPuzzleSplash"
             android:exported="false" />
 
         <meta-data
@@ -59,16 +60,16 @@
             android:value="@string/GMap_APIKEY" />
 
         <activity
-            android:name=".Doctor_registration"
+            android:name=".Doctor.Doctor_registration"
             android:exported="false" />
         <activity
-            android:name=".select_patients"
+            android:name=".Patient.select_patients"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Patient.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".guideRegistrationActivity"
+            android:name=".CareTaker.guideRegistrationActivity"
             android:exported="false" />
         <activity
             android:name=".Registration"
@@ -77,13 +78,13 @@
             android:name=".Login"
             android:exported="false" />
         <activity
-            android:name=".patient"
+            android:name=".Patient.patient"
             android:exported="false" />
         <activity
-            android:name=".sudokuSplash"
+            android:name=".Patient.Games.sudokuSplash"
             android:exported="false" /> <!-- Sudoku Activity -->
         <activity
-            android:name=".sudoku"
+            android:name=".Patient.Games.sudoku"
             android:exported="false" />
         <activity
             android:name=".Splash"
@@ -95,7 +96,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SuccessActivity"
+            android:name=".Patient.Games.SuccessActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
