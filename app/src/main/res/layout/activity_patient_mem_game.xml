@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Patient_Mem_Game">
+    tools:context=".Patient.Games.Patient_Mem_Game">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,7 +35,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/btn_card"
+                android:background="@drawable/image1"
                 android:scaleType="centerCrop"
                 android:src="@drawable/card_back" />
 
@@ -44,7 +43,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/btn_card"
+                android:background="@drawable/image2"
                 android:scaleType="centerCrop"
                 android:src="@drawable/card_back" />
 
@@ -52,7 +51,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/btn_card"
+                android:background="@drawable/image3"
                 android:scaleType="centerCrop"
                 android:src="@drawable/card_back" />
 
@@ -60,7 +59,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/btn_card"
+                android:background="@drawable/image4"
                 android:scaleType="centerCrop"
                 android:src="@drawable/card_back" />
 
@@ -68,7 +67,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/btn_card"
+                android:background="@drawable/image1"
                 android:scaleType="centerCrop"
                 android:src="@drawable/card_back" />
 
@@ -76,7 +75,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/btn_card"
+                android:background="@drawable/image2"
                 android:scaleType="centerCrop"
                 android:src="@drawable/card_back" />
 
@@ -84,7 +83,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/btn_card"
+                android:background="@drawable/image3"
                 android:scaleType="centerCrop"
                 android:src="@drawable/card_back" />
 
@@ -92,7 +91,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/btn_card"
+                android:background="@drawable/image4"
                 android:scaleType="centerCrop"
                 android:src="@drawable/card_back" />
         </GridLayout>
