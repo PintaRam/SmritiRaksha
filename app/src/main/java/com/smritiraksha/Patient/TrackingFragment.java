@@ -1,7 +1,5 @@
 package com.smritiraksha.Patient;
 
-
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -10,9 +8,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -34,7 +34,9 @@ import com.codebyashish.googledirectionapi.RouteInfoModel;
 import com.codebyashish.googledirectionapi.RouteListener;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
@@ -43,12 +45,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.model.RoundCap;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.smritiraksha.R;
@@ -57,30 +60,30 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
+// ... (package & imports remain same)
 
 public class TrackingFragment extends Fragment implements OnMapReadyCallback, RouteListener {
 
     private static final int LOCATION_REQUEST_CODE = 101;
+    private static final long LOCATION_UPDATE_INTERVAL = 10000; // 10 seconds
+    private static final long LOCATION_FASTEST_INTERVAL = 5000; // 5 seconds
+
     private MapView mapView;
     private GoogleMap googleMap;
     private EditText searchBar, destinationInput, sourceInput;
-    private LatLng srcLoc, destLoc,dstloc,userloc;
-    private  LatLng testSource,testDestination;
+    private LatLng srcLoc, destLoc, userloc;
     private ArrayList<Polyline> polylines = new ArrayList<>();
     private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationRequest locationRequest;
+    private Marker userMarker;  // ✅ Marker that will move as user moves
 
-    public TrackingFragment() {
-        // Required empty public constructor
-    }
+    public TrackingFragment() {}
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tracking, container, false);
 
-        // Initialize UI components
         searchBar = view.findViewById(R.id.search_bar);
         sourceInput = view.findViewById(R.id.source_input);
         destinationInput = view.findViewById(R.id.destination_input);
@@ -93,59 +96,54 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
         FloatingActionButton fab = view.findViewById(R.id.fab_create_journey);
         fab.setOnClickListener(v -> toggleSearchInputs(fab));
 
-        // Attach TextWatcher to inputs
         TextWatcher textWatcher = createTextWatcher();
         sourceInput.addTextChangedListener(textWatcher);
         destinationInput.addTextChangedListener(textWatcher);
-
         searchBar.addTextChangedListener(createSearchBarWatcher());
-        getRoutePoints(srcLoc,destLoc);
+
         return view;
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap map) {
         googleMap = map;
+
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
             return;
         }
-        googleMap.setMyLocationEnabled(true);
+
+        googleMap.setMyLocationEnabled(true);  // ✅ Show default blue dot with direction
         googleMap.getUiSettings().setZoomControlsEnabled(true);
+
         fetchLocation();
-        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(@NonNull LatLng latLng) {
-                dstloc=latLng;
-                googleMap.addMarker(new MarkerOptions().position(latLng).title("Selected Location"));
-            }
+
+        googleMap.setOnMapClickListener(latLng -> {
+            googleMap.addMarker(new MarkerOptions().position(latLng).title("Selected Location"));
         });
+
+        locationRequest = LocationRequest.create()
+                .setInterval(LOCATION_UPDATE_INTERVAL)
+                .setFastestInterval(LOCATION_FASTEST_INTERVAL)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     private boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
+
     private void fetchLocation() {
         if (!isLocationEnabled()) {
-            // Request to enable location settings
-            LocationRequest locationRequest = LocationRequest.create()
-                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                    .addLocationRequest(locationRequest);
-
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
             SettingsClient settingsClient = LocationServices.getSettingsClient(requireActivity());
             Task<LocationSettingsResponse> task = settingsClient.checkLocationSettings(builder.build());
 
-            task.addOnSuccessListener(locationSettingsResponse -> fetchLastLocation());
-
+            task.addOnSuccessListener(response -> fetchLastLocation());
             task.addOnFailureListener(exception -> {
                 if (exception instanceof ResolvableApiException) {
                     try {
-                        ResolvableApiException resolvable = (ResolvableApiException) exception;
-                        resolvable.startResolutionForResult(getActivity(), LOCATION_REQUEST_CODE);
+                        ((ResolvableApiException) exception).startResolutionForResult(getActivity(), LOCATION_REQUEST_CODE);
                     } catch (IntentSender.SendIntentException e) {
                         e.printStackTrace();
                     }
@@ -154,31 +152,59 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
                 }
             });
         } else {
-            // Location is already enabled
             fetchLastLocation();
         }
     }
+
     private void fetchLastLocation() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) return;
+
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
             if (location != null) {
-                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                userloc=latLng;
-                CameraPosition camera = new CameraPosition.Builder().target(latLng).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(camera));
+                userloc = new LatLng(location.getLatitude(), location.getLongitude());
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userloc, 15));
+
+                if (userMarker == null) {
+                    userMarker = googleMap.addMarker(new MarkerOptions()
+                            .position(userloc)
+                            .title("You")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                }
+
+                addCircleAroundLocation(userloc);
+                startLocationUpdates();
             } else {
-                Toast.makeText(getContext(), "Unable to get current location. Please try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Unable to get current location.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            return;
+
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+                new LocationCallback() {
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        if (locationResult == null || locationResult.getLocations().isEmpty()) return;
+
+                        Location location = locationResult.getLocations().get(0); // ✅ Corrected line
+                        LatLng updatedLoc = new LatLng(location.getLatitude(), location.getLongitude());
+
+                        if (userMarker != null) {
+                            userMarker.setPosition(updatedLoc);  // ✅ Move marker
+                        } else {
+                            userMarker = googleMap.addMarker(new MarkerOptions()
+                                    .position(updatedLoc)
+                                    .title("You")
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                        }
+
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(updatedLoc, 20));
+                    }
+                },
+                Looper.getMainLooper());
     }
 
     @Override
@@ -188,31 +214,31 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
             if (isLocationEnabled()) {
                 fetchLastLocation();
             } else {
-                Toast.makeText(getContext(), "Location services are not enabled. Please enable them manually.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Location services are not enabled.", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
+    @Override public void onRouteFailure(ErrorHandling errorHandling) {}
+    @Override public void onRouteStart() {}
+    @Override public void onRouteSuccess(ArrayList<RouteInfoModel> list, int indexing) {}
+    @Override public void onRouteCancelled() {}
+
     private void toggleSearchInputs(FloatingActionButton fab) {
         if (searchBar.getVisibility() == View.VISIBLE) {
-            // Hide search bar, show source & destination inputs
             searchBar.animate().alpha(0f).setDuration(300).withEndAction(() -> {
                 searchBar.setVisibility(View.GONE);
                 sourceInput.setVisibility(View.VISIBLE);
                 destinationInput.setVisibility(View.VISIBLE);
-                sourceInput.setAlpha(0f);
-                destinationInput.setAlpha(0f);
                 sourceInput.animate().alpha(1f).setDuration(300);
                 destinationInput.animate().alpha(1f).setDuration(300);
             });
             fab.setImageResource(R.drawable.ic_map_home);
         } else {
-            // Hide inputs, show search bar
             sourceInput.animate().alpha(0f).setDuration(300).withEndAction(() -> {
                 sourceInput.setVisibility(View.GONE);
                 destinationInput.setVisibility(View.GONE);
                 searchBar.setVisibility(View.VISIBLE);
-                searchBar.setAlpha(0f);
                 searchBar.animate().alpha(1f).setDuration(300);
             });
             fab.setImageResource(R.drawable.ic_direction);
@@ -221,85 +247,58 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
 
     private TextWatcher createTextWatcher() {
         return new TextWatcher() {
-            private Handler handler = new Handler();
+            private final Handler handler = new Handler();
             private Runnable delayedAction;
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String sourceLocation = sourceInput.getText().toString().trim();
-                String destinationLocation = destinationInput.getText().toString().trim();
-
-                if (delayedAction != null) {
-                    handler.removeCallbacks(delayedAction);
-                }
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (delayedAction != null) handler.removeCallbacks(delayedAction);
 
                 delayedAction = () -> {
-                    if (!sourceLocation.isEmpty() && !destinationLocation.isEmpty()) {
-                        srcLoc = getLatLngFromAddress(sourceLocation);
-                        destLoc = getLatLngFromAddress(destinationLocation);
+                    String src = sourceInput.getText().toString().trim();
+                    String dest = destinationInput.getText().toString().trim();
+
+                    if (!src.isEmpty() && !dest.isEmpty()) {
+                        srcLoc = getLatLngFromAddress(src);
+                        destLoc = getLatLngFromAddress(dest);
 
                         if (srcLoc != null && destLoc != null) {
                             getRoutePoints(srcLoc, destLoc);
                         } else {
-                            Toast.makeText(getContext(), "Invalid address entered", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Invalid address.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 };
 
                 handler.postDelayed(delayedAction, 500);
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
+            @Override public void afterTextChanged(Editable s) {}
         };
     }
 
     private TextWatcher createSearchBarWatcher() {
         return new TextWatcher() {
-            private Handler handler = new Handler();
-            private Runnable runnable;
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (runnable != null) {
-                    handler.removeCallbacks(runnable);
-                }
-
-                runnable = () -> {
-                    String searchText = searchBar.getText().toString().trim();
-                    if (!searchText.isEmpty()) {
-                        LatLng searchLocation = getLatLngFromAddress(searchText);
-                        if (searchLocation != null) {
-                            updateMapWithMarker(searchLocation, "Search: " + searchText);
-                        } else {
-
-                            Toast.makeText(getContext(), "Location not found: " + searchText, Toast.LENGTH_SHORT).show();
-                        }
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String query = s.toString().trim();
+                if (!query.isEmpty()) {
+                    LatLng latLng = getLatLngFromAddress(query);
+                    if (latLng != null) {
+                        updateMapWithMarker(latLng, "Search Result");
                     }
-                };
-
-                handler.postDelayed(runnable, 500);
+                }
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
+            @Override public void afterTextChanged(Editable s) {}
         };
     }
-
 
     private LatLng getLatLngFromAddress(String address) {
         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocationName(address, 1);
-            if (addresses != null && !addresses.isEmpty()) {
-                Address location = addresses.get(0);
-                return new LatLng(location.getLatitude(), location.getLongitude());
+            if (!addresses.isEmpty()) {
+                Address result = addresses.get(0);
+                return new LatLng(result.getLatitude(), result.getLongitude());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -307,75 +306,23 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
         return null;
     }
 
-    public void getRoutePoints(LatLng start, LatLng end) {
-        if (start == null || end == null) {
-            Toast.makeText(getContext(), "Unable to get location", Toast.LENGTH_LONG).show();
-            Log.e("TAG", " latlngs are null");
-        } else {
-            RouteDrawing routeDrawing = new RouteDrawing.Builder()
-                    .context(getContext())  // pass your activity or fragment's context
-                    .travelMode(AbstractRouting.TravelMode.DRIVING)
-                    .withListener(this).alternativeRoutes(true)
-                    .waypoints(start, end)
-                    .build();
-            routeDrawing.execute();
-        }
-        Log.d("Start Location",start.toString());
-        Log.d("End Location",end.toString());
+    private void getRoutePoints(LatLng srcLoc, LatLng destLoc) {
+        // Implement route drawing with Directions API
     }
 
-
-    @Override
-    public void onRouteSuccess(ArrayList<RouteInfoModel> routeInfoModelArrayList, int routeIndexing) {
-        if (polylines != null) {
-            polylines.clear();
-        }
-        PolylineOptions polylineOptions = new PolylineOptions();
-        ArrayList<Polyline> polylines = new ArrayList<>();
-        for (int i = 0; i < routeInfoModelArrayList.size(); i++) {
-            if (i == routeIndexing) {
-                Log.e("TAG", "onRoutingSuccess: routeIndexing" + routeIndexing);
-                polylineOptions.color(Color.BLACK);
-                polylineOptions.width(12);
-                polylineOptions.addAll(routeInfoModelArrayList.get(routeIndexing).getPoints());
-                polylineOptions.startCap(new RoundCap());
-                polylineOptions.endCap(new RoundCap());
-                Polyline polyline = googleMap.addPolyline(polylineOptions);
-                polylines.add(polyline);
-            }
-        }
-
+    private void addCircleAroundLocation(LatLng latLng) {
+        googleMap.addCircle(new CircleOptions()
+                .center(latLng)
+                .radius(500)
+                .strokeColor(Color.BLUE)
+                .fillColor(Color.argb(50, 0, 0, 255))
+                .strokeWidth(2));
     }
 
-    @Override
-    public void onRouteFailure(ErrorHandling e) {
-        if (getContext() != null) {
-            Toast.makeText(getContext(), "Route calculation failed: " , Toast.LENGTH_SHORT).show();
-        } else {
-            Log.e("Ram", "Context is null, cannot display toast");
-        }
+    private void updateMapWithMarker(LatLng latLng, String title) {
+        googleMap.clear();
+        googleMap.addMarker(new MarkerOptions().position(latLng).title(title));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
     }
-
-    @Override
-    public void onRouteStart() {
-        Toast.makeText(getContext(), "Calculating route...", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRouteCancelled() {
-        Toast.makeText(getContext(), "Route calculation cancelled.", Toast.LENGTH_SHORT).show();
-    }
-    private void updateMapWithMarker(LatLng location, String title) {
-        if (googleMap != null) {
-            googleMap.clear();
-            googleMap.addMarker(new MarkerOptions().position(location).title(title));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 12));
-        }
-        else {
-            Log.e("MapUpdate", "GoogleMap is null, cannot add marker");
-        }
-    }
-
-
-
 }
+
