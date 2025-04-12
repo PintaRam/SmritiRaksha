@@ -18,7 +18,7 @@
         android:id="@+id/doctorName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dr. John Doe"
+        android:text="Dr."
         android:textColor="@android:color/white"
         android:textSize="18sp"
         android:paddingTop="8dp"/>

@@ -70,9 +70,9 @@
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:background="@color/white"
-        app:headerLayout="@layout/nav_header_doctor"
-        app:menu="@menu/menu_doctor_drawer"/>
+        app:headerLayout="@layout/nav_header_doctor"/>
+
 </androidx.drawerlayout.widget.DrawerLayout>
