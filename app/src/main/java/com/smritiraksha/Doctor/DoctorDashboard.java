@@ -25,6 +25,9 @@ public class DoctorDashboard extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_doctor_dashboard);
 
+            String patientId = getIntent().getStringExtra("patient_id");
+            String patientName = getIntent().getStringExtra("patient_name");
+
             viewPager = findViewById(R.id.viewPager);
             tabLayout = findViewById(R.id.tabLayout);
             drawerLayout = findViewById(R.id.drawerLayout);
