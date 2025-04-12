@@ -3,101 +3,109 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context=".Patient.Games.Patient_Mem_Game">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="20dp"
-        android:gravity="center">
+        android:padding="20dp"
+        android:gravity="center_horizontal">
 
+        <!-- Game Title -->
         <TextView
             android:id="@+id/gameTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Memory Game"
             android:textSize="24sp"
-            android:textColor="@color/black"
             android:textStyle="bold"
+            android:textColor="@android:color/black"
             android:layout_marginBottom="20dp" />
 
+        <!-- Grid of Cards -->
         <GridLayout
             android:id="@+id/gridLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:columnCount="2"
             android:rowCount="4"
-            android:layout_gravity="center">
+            android:alignmentMode="alignMargins"
+            android:padding="10dp"
+            android:layout_gravity="center"
+            android:useDefaultMargins="true">
 
-            <!-- 8 Card Buttons -->
+            <!-- 8 Card Buttons (Back side initially) -->
             <ImageButton
+                android:id="@+id/card_0"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/image1"
                 android:scaleType="centerCrop"
-                android:src="@drawable/card_back" />
+                android:src="@drawable/card_back"
+                android:onClick="onCardClick" />
 
             <ImageButton
+                android:id="@+id/card_1"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/image2"
                 android:scaleType="centerCrop"
-                android:src="@drawable/card_back" />
+                android:src="@drawable/card_back"
+                android:onClick="onCardClick" />
 
             <ImageButton
+                android:id="@+id/card_2"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/image3"
                 android:scaleType="centerCrop"
-                android:src="@drawable/card_back" />
+                android:src="@drawable/card_back"
+                android:onClick="onCardClick" />
 
             <ImageButton
+                android:id="@+id/card_3"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/image4"
                 android:scaleType="centerCrop"
-                android:src="@drawable/card_back" />
+                android:src="@drawable/card_back"
+                android:onClick="onCardClick" />
 
             <ImageButton
+                android:id="@+id/card_4"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/image1"
                 android:scaleType="centerCrop"
-                android:src="@drawable/card_back" />
+                android:src="@drawable/card_back"
+                android:onClick="onCardClick" />
 
             <ImageButton
+                android:id="@+id/card_5"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/image2"
                 android:scaleType="centerCrop"
-                android:src="@drawable/card_back" />
+                android:src="@drawable/card_back"
+                android:onClick="onCardClick" />
 
             <ImageButton
+                android:id="@+id/card_6"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/image3"
                 android:scaleType="centerCrop"
-                android:src="@drawable/card_back" />
+                android:src="@drawable/card_back"
+                android:onClick="onCardClick" />
 
             <ImageButton
+                android:id="@+id/card_7"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/image4"
                 android:scaleType="centerCrop"
-                android:src="@drawable/card_back" />
+                android:src="@drawable/card_back"
+                android:onClick="onCardClick" />
+
         </GridLayout>
 
+        <!-- Buttons for Restart & Exit -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="30dp"
