@@ -97,7 +97,7 @@ public class PatientSelectionActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error parsing data", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(this, "Failed to fetch patients", Toast.LENGTH_SHORT).show());
+                error -> Toast.makeText(this, "Failed to fetch patients,No Network...", Toast.LENGTH_SHORT).show());
 
         queue.add(request);
     }
