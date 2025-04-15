@@ -3,12 +3,25 @@ package com.smritiraksha.Doctor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.smritiraksha.R;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +38,11 @@ public class MedicationFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private RecyclerView recyclerView;
+    private List<Prescription> prescriptionList = new ArrayList<>();
+    private PrescriptionAdapter adapter;
+    private String patientEmail = "patient@example.com";
 
     public MedicationFragment() {
         // Required empty public constructor
@@ -61,6 +79,61 @@ public class MedicationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_medication, container, false);
+        View view = inflater.inflate(R.layout.fragment_medication, container, false);
+
+        recyclerView = view.findViewById(R.id.prescriptionRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new PrescriptionAdapter(getContext(), prescriptionList);
+        recyclerView.setAdapter(adapter);
+
+        //loadPrescriptions();
+        loadSamplePrescriptions();
+        return view;
+    }
+
+
+    private void loadPrescriptions() {
+        String url = "https://yourserver.com/get_prescriptions.php?email=" + patientEmail;
+
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    try {
+                        JSONArray array = new JSONArray(response);
+                        prescriptionList.clear();
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject obj = array.getJSONObject(i);
+                            Prescription p = new Prescription(
+                                    obj.getString("id"),
+                                    obj.getString("patient_id"),
+                                    obj.getString("title"),
+                                    obj.getString("description"),
+                                    obj.getString("hour"),
+                                    obj.getString("minute"),
+                                    obj.getString("createdat")
+                            );
+                            prescriptionList.add(p);
+                        }
+                        adapter.notifyDataSetChanged();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> Toast.makeText(getContext(), "Failed to load", Toast.LENGTH_SHORT).show()
+        );
+
+        queue.add(request);
+    }
+
+    private void loadSamplePrescriptions() {
+        prescriptionList.clear();
+        prescriptionList.add(new Prescription("1", "patient001", "Donepezil", "Used to treat confusion", "08", "30", "2025-04-14"));
+        prescriptionList.add(new Prescription("2", "patient001", "Memantine", "Helps with memory", "10", "00", "2025-04-12"));
+        prescriptionList.add(new Prescription("3", "patient001", "Rivastigmine", "Improves awareness", "14", "15", "2025-04-10"));
+
+        prescriptionList.add(new Prescription("1", "patient001", "Donepezil", "Used to treat confusion", "08", "30", "2025-04-14"));
+        prescriptionList.add(new Prescription("2", "patient001", "Memantine", "Helps with memory", "10", "00", "2025-04-12"));
+        prescriptionList.add(new Prescription("3", "patient001", "Rivastigmine", "Improves awareness", "14", "15", "2025-04-10"));
+        adapter.notifyDataSetChanged();
     }
 }

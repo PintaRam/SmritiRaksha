@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="20dp"
+        android:background="@drawable/box_border_orange"
+        android:layout_margin="4dp"
         >
     <!-- Medication Tracker -->
     <TextView android:text="💊 Medication Tracker" android:textStyle="bold"
@@ -19,20 +20,13 @@
         android:layout_margin="10dp"
         />
 
-    <!-- Placeholder for medication list -->
-    <TextView android:text="• Donepezil – Taken\n• Memantine – Missed"
-    android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-    android:layout_width="match_parent"/>
-
-    <!-- Buttons -->
-    <Button android:text="➕ Add Medication"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_width="match_parent"/>
-    <Button android:text="✏️ Edit Prescription"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/prescriptionRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:scrollbars="vertical" />
     </LinearLayout>
 
 </FrameLayout>

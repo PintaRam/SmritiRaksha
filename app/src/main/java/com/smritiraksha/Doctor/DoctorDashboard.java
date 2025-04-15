@@ -1,5 +1,6 @@
 package com.smritiraksha.Doctor;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -190,5 +191,22 @@ public class DoctorDashboard extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            String fragmentName = data.getStringExtra("return_to_fragment");
+            if ("MedicationFragment".equals(fragmentName)) {
+                loadMedicationFragment();
+            }
+        }
+    }
+
+    private void loadMedicationFragment() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, new MedicationFragment())
+                .commit();
+    }
 
 }

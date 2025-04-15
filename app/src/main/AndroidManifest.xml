@@ -26,6 +26,9 @@
             android:name=".Doctor.PatientSelectionActivity"
             android:exported="false" />
         <activity
+            android:name=".Doctor.EditPrescriptionActivity"
+            android:exported="false" />
+        <activity
             android:name=".Doctor.DoctorDashboard"
             android:exported="false"
             android:theme="@style/Theme.SmritiRaksha" />
