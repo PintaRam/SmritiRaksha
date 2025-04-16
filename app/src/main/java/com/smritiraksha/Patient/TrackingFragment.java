@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.VolleyError;
 import com.codebyashish.googledirectionapi.AbstractRouting;
 import com.codebyashish.googledirectionapi.ErrorHandling;
 import com.codebyashish.googledirectionapi.RouteDrawing;
@@ -54,13 +55,23 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.smritiraksha.Constants;
 import com.smritiraksha.R;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-// ... (package & imports remain same)
+import java.util.Map;
 
 public class TrackingFragment extends Fragment implements OnMapReadyCallback, RouteListener {
 
@@ -75,7 +86,7 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
     private ArrayList<Polyline> polylines = new ArrayList<>();
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
-    private Marker userMarker;  // ✅ Marker that will move as user moves
+    private Marker userMarker;  // Marker that will move as user moves
 
     public TrackingFragment() {}
 
@@ -113,7 +124,7 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
             return;
         }
 
-        googleMap.setMyLocationEnabled(true);  // ✅ Show default blue dot with direction
+        googleMap.setMyLocationEnabled(true);  // Show default blue dot with direction
         googleMap.getUiSettings().setZoomControlsEnabled(true);
 
         fetchLocation();
@@ -171,8 +182,9 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
                 }
 
-                addCircleAroundLocation(userloc);
+
                 startLocationUpdates();
+                updateLocationInDatabase(userloc.latitude, userloc.longitude);  // Update location in database
             } else {
                 Toast.makeText(getContext(), "Unable to get current location.", Toast.LENGTH_SHORT).show();
             }
@@ -189,11 +201,11 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
                     public void onLocationResult(LocationResult locationResult) {
                         if (locationResult == null || locationResult.getLocations().isEmpty()) return;
 
-                        Location location = locationResult.getLocations().get(0); // ✅ Corrected line
+                        Location location = locationResult.getLocations().get(0); // Corrected line
                         LatLng updatedLoc = new LatLng(location.getLatitude(), location.getLongitude());
 
                         if (userMarker != null) {
-                            userMarker.setPosition(updatedLoc);  // ✅ Move marker
+                            userMarker.setPosition(updatedLoc);  // Move marker
                         } else {
                             userMarker = googleMap.addMarker(new MarkerOptions()
                                     .position(updatedLoc)
@@ -202,10 +214,53 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
                         }
 
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(updatedLoc, 20));
+
+                        // Update location in the database on each update
+                        updateLocationInDatabase(updatedLoc.latitude, updatedLoc.longitude);
                     }
                 },
                 Looper.getMainLooper());
     }
+
+
+// Your existing code...
+private void updateLocationInDatabase(double latitude, double longitude) {
+    if (!isAdded()) {
+        Log.w("TrackingFragment", "Fragment not attached. Skipping location update.");
+        return;
+    }
+
+    Context appContext = getContext().getApplicationContext();
+    String url = Constants.Patient_location;
+    String patient_id = "PT01Sri"; // You can replace this with a dynamic value if needed
+
+    StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+            response -> {
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean error = jsonResponse.getBoolean("error");
+                    String message = jsonResponse.getString("message");
+                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            },
+            error -> {
+                error.printStackTrace();
+                Toast.makeText(getContext(), "Failed to update location", Toast.LENGTH_SHORT).show();
+            }) {
+        @Override
+        protected Map<String, String> getParams() {
+            Map<String, String> params = new HashMap<>();
+            params.put("patient_id", patient_id);
+            params.put("latitude", String.valueOf(latitude));
+            params.put("longitude", String.valueOf(longitude));
+            return params;
+        }
+    };
+
+    Volley.newRequestQueue(appContext).add(stringRequest);
+}
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -241,88 +296,29 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
                 searchBar.setVisibility(View.VISIBLE);
                 searchBar.animate().alpha(1f).setDuration(300);
             });
-            fab.setImageResource(R.drawable.ic_direction);
+            fab.setImageResource(R.drawable.ic_maps_search);
         }
     }
 
     private TextWatcher createTextWatcher() {
         return new TextWatcher() {
-            private final Handler handler = new Handler();
-            private Runnable delayedAction;
-
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (delayedAction != null) handler.removeCallbacks(delayedAction);
-
-                delayedAction = () -> {
-                    String src = sourceInput.getText().toString().trim();
-                    String dest = destinationInput.getText().toString().trim();
-
-                    if (!src.isEmpty() && !dest.isEmpty()) {
-                        srcLoc = getLatLngFromAddress(src);
-                        destLoc = getLatLngFromAddress(dest);
-
-                        if (srcLoc != null && destLoc != null) {
-                            getRoutePoints(srcLoc, destLoc);
-                        } else {
-                            Toast.makeText(getContext(), "Invalid address.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                };
-
-                handler.postDelayed(delayedAction, 500);
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void afterTextChanged(Editable editable) {
+                // Handle location and route search update logic
             }
-            @Override public void afterTextChanged(Editable s) {}
         };
     }
 
     private TextWatcher createSearchBarWatcher() {
         return new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String query = s.toString().trim();
-                if (!query.isEmpty()) {
-                    LatLng latLng = getLatLngFromAddress(query);
-                    if (latLng != null) {
-                        updateMapWithMarker(latLng, "Search Result");
-                    }
-                }
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void afterTextChanged(Editable editable) {
+                // Handle search bar updates
             }
-            @Override public void afterTextChanged(Editable s) {}
         };
     }
 
-    private LatLng getLatLngFromAddress(String address) {
-        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocationName(address, 1);
-            if (!addresses.isEmpty()) {
-                Address result = addresses.get(0);
-                return new LatLng(result.getLatitude(), result.getLongitude());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
-    private void getRoutePoints(LatLng srcLoc, LatLng destLoc) {
-        // Implement route drawing with Directions API
-    }
-
-    private void addCircleAroundLocation(LatLng latLng) {
-        googleMap.addCircle(new CircleOptions()
-                .center(latLng)
-                .radius(500)
-                .strokeColor(Color.BLUE)
-                .fillColor(Color.argb(50, 0, 0, 255))
-                .strokeWidth(2));
-    }
-
-    private void updateMapWithMarker(LatLng latLng, String title) {
-        googleMap.clear();
-        googleMap.addMarker(new MarkerOptions().position(latLng).title(title));
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
-    }
 }
-
