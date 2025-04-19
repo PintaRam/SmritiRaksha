@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.BODY_SENSORS" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -86,6 +87,7 @@
         <activity
             android:name=".Patient.Games.sudoku"
             android:exported="false" />
+
         <activity
             android:name=".Splash"
             android:exported="true">
