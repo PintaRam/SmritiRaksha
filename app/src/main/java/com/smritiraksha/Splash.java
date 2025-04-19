@@ -10,6 +10,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.smritiraksha.CareTaker.guidesMainActivity;
 import com.smritiraksha.Patient.MainActivity;
 
 public class Splash extends AppCompatActivity {
@@ -34,7 +35,7 @@ public class Splash extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(Splash.this, MainActivity.class);
+                Intent intent = new Intent(Splash.this, guidesMainActivity.class);
                 startActivity(intent);
                 finish();
             }
