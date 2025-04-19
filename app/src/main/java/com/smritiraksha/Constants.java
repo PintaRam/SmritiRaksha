@@ -6,7 +6,7 @@ public class Constants {
 
    //root server url
 
-    private static  String Root_URL = "https://275c-2409-40f2-319-d45a-e90d-f861-f9be-bdf2.ngrok-free.app/android/v1/";
+    private static  String Root_URL = "https://ff20-2409-40f2-1032-6b4f-a034-71d7-ba5f-7dc4.ngrok-free.app/android/v1/";
 
     //registration
     public  static  String URL_REGISTER = Root_URL + "registerUser.php";
@@ -29,3 +29,5 @@ public class Constants {
     public static  String Get_Patient_location= Root_URL+"get_patient_location.php";
 
 }
+//ngrok config add-authtoken 2pU1y8rkrxYIsyfSJO8fzXSgM8Y_35H6ZALE1Nmx9h5XEZGiC
+//ngrok http http://localhost:80

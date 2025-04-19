@@ -1,11 +1,17 @@
 package com.smritiraksha.CareTaker;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,27 +29,40 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.smritiraksha.Constants;
 import com.smritiraksha.R;
+
 import android.location.Address;
 import android.location.Geocoder;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class tracking_nav extends Fragment implements OnMapReadyCallback {
+    private float allowedRadius = 500f; // default in meters
+    private LatLng baseLocation = null;
 
     private GoogleMap mMap;
     private Marker currentMarker;
     private Handler handler = new Handler();
     private RequestQueue requestQueue;
     private TextView locationTextView;
+    private Polyline movementPolyline;
 
-    private static final String LOCATION_URL = Constants.Get_Patient_location; // Update this
+    private final List<TimedLocation> movementTrail = new ArrayList<>();
+    private static final String LOCATION_URL = Constants.Get_Patient_location;
     private static final int POLL_INTERVAL = 5000; // 5 seconds
+    private static final long MAX_DURATION = 24 * 60 * 60 * 1000L; // 24 hours in milliseconds
+
+    private final String patientId = "PT01Sri"; // Replace dynamically later
 
     public tracking_nav() {}
 
@@ -56,6 +75,24 @@ public class tracking_nav extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        EditText etRadius = view.findViewById(R.id.et_radius);
+        Button btnSetRadius = view.findViewById(R.id.btn_set_radius);
+
+        btnSetRadius.setOnClickListener(v -> {
+            if (etRadius.getVisibility() == View.GONE) {
+                etRadius.setVisibility(View.VISIBLE);
+                btnSetRadius.setText("Save Radius");
+            } else {
+                String radiusStr = etRadius.getText().toString();
+                if (!radiusStr.isEmpty()) {
+                    allowedRadius = Float.parseFloat(radiusStr);
+                    Toast.makeText(getContext(), "Radius set to " + allowedRadius + " meters", Toast.LENGTH_SHORT).show();
+                }
+                etRadius.setVisibility(View.GONE);
+                btnSetRadius.setText("Set Radius");
+            }
+        });
+
 
         locationTextView = new TextView(requireContext());
         locationTextView.setText("Fetching location...");
@@ -75,6 +112,7 @@ public class tracking_nav extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
+        movementPolyline = mMap.addPolyline(new PolylineOptions().width(6f).color(0xFF0077CC)); // Light blue
         startPollingLocation();
     }
 
@@ -87,8 +125,6 @@ public class tracking_nav extends Fragment implements OnMapReadyCallback {
             }
         }, 0);
     }
-
-    private String patientId = "PT01Sri"; // You should set this dynamically based on login/session
 
     private void fetchLocationFromServer() {
         JSONObject postData = new JSONObject();
@@ -107,7 +143,8 @@ public class tracking_nav extends Fragment implements OnMapReadyCallback {
                         double longitude = response.getDouble("longitude");
 
                         updateMapLocation(latitude, longitude);
-                        fetchAddress(latitude, longitude); // new method
+                        updateMovementTrail(latitude, longitude);
+                        fetchAddress(latitude, longitude);
 
                     } catch (JSONException e) {
                         Log.e("LocationFetch", "JSON error: " + e.getMessage());
@@ -124,16 +161,73 @@ public class tracking_nav extends Fragment implements OnMapReadyCallback {
         requestQueue.add(request);
     }
 
-
     private void updateMapLocation(double lat, double lng) {
         LatLng newLocation = new LatLng(lat, lng);
+
+        // Set base location only once
+        if (baseLocation == null) {
+            baseLocation = newLocation;
+        }
+
         if (currentMarker == null) {
             currentMarker = mMap.addMarker(new MarkerOptions().position(newLocation).title("Patient Location"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newLocation, 20));
         } else {
             currentMarker.setPosition(newLocation);
         }
+
+        // 🚨 Check distance from base
+        float[] result = new float[1];
+        android.location.Location.distanceBetween(
+                baseLocation.latitude, baseLocation.longitude,
+                newLocation.latitude, newLocation.longitude,
+                result
+        );
+
+        if (result[0] > allowedRadius) {
+            triggerEmergencyAlert(); // defined below
+        }
     }
+
+    private void triggerEmergencyAlert() {
+        Vibrator vibrator = (Vibrator) requireContext().getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator != null && vibrator.hasVibrator()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                vibrator.vibrate(1000); // fallback for older devices
+            }
+        }
+
+        Toast.makeText(getContext(), "🚨 Patient moved outside safe zone!", Toast.LENGTH_LONG).show();
+
+        // You can also launch a notification or start an emergency service here
+    }
+
+    private void updateMovementTrail(double lat, double lng) {
+        long currentTime = System.currentTimeMillis();
+        movementTrail.add(new TimedLocation(new LatLng(lat, lng), currentTime));
+
+        // Clean up older than 24 hours
+        Iterator<TimedLocation> iterator = movementTrail.iterator();
+        while (iterator.hasNext()) {
+            TimedLocation tl = iterator.next();
+            if (currentTime - tl.timestamp > MAX_DURATION) {
+                iterator.remove();
+            }
+        }
+
+        // Draw polyline
+        List<LatLng> points = new ArrayList<>();
+        for (TimedLocation tl : movementTrail) {
+            points.add(tl.latLng);
+        }
+
+        if (movementPolyline != null) {
+            movementPolyline.setPoints(points);
+        }
+    }
+
     private void fetchAddress(double latitude, double longitude) {
         Geocoder geocoder = new Geocoder(requireContext());
         try {
@@ -141,10 +235,9 @@ public class tracking_nav extends Fragment implements OnMapReadyCallback {
             if (addresses != null && !addresses.isEmpty()) {
                 Address address = addresses.get(0);
 
-                String fullAddress = address.getAddressLine(0); // full address
-                String floor = address.getSubThoroughfare(); // can include building info sometimes
+                String fullAddress = address.getAddressLine(0);
+                String floor = address.getSubThoroughfare();
 
-                // You can customize this display text
                 String displayAddress = "📍 Location:\n" + fullAddress;
                 if (floor != null) {
                     displayAddress += "\nFloor Info: " + floor;
@@ -160,4 +253,14 @@ public class tracking_nav extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    // Helper class to store time with location
+    private static class TimedLocation {
+        LatLng latLng;
+        long timestamp;
+
+        TimedLocation(LatLng latLng, long timestamp) {
+            this.latLng = latLng;
+            this.timestamp = timestamp;
+        }
+    }
 }
