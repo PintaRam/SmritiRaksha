@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.smritiraksha.CareTaker.guidesMainActivity;
+import com.smritiraksha.Doctor.DoctorDashboard;
 import com.smritiraksha.Patient.MainActivity;
 
 import org.json.JSONObject;
@@ -160,7 +161,7 @@ public class Login extends AppCompatActivity {
                         Intent intent;
                         switch (role) {
                             case "Doctor":
-                                intent = new Intent(Login.this, MainActivity.class);
+                                intent = new Intent(Login.this, DoctorDashboard.class);
                                 break;
                             case "Caretaker":
                                 intent = new Intent(Login.this, guidesMainActivity.class);

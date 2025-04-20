@@ -24,11 +24,6 @@ import com.smritiraksha.R;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BehaviorFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class BehaviorFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
