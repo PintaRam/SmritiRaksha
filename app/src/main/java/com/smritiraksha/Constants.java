@@ -34,6 +34,7 @@ public class Constants {
 
     public static String All_Patinets=Root_URL+"AllPatinets.php";
     public static String Doc_Info_API=Root_URL+"DoctorInfo.php";
+    public static String UPDATE_RADIUS_URL=Root_URL+"update_radius.php";
 
 }
 //ngrok config add-authtoken 2pU1y8rkrxYIsyfSJO8fzXSgM8Y_35H6ZALE1Nmx9h5XEZGiC
