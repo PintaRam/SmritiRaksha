@@ -21,6 +21,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.smritiraksha.CareTaker.guideRegistrationActivity;
+import com.smritiraksha.Doctor.Doctor_registration;
 import com.smritiraksha.Patient.patient;
 
 import org.json.JSONException;
@@ -160,7 +161,7 @@ public class Registration extends AppCompatActivity {
         Intent intent;
         switch (role.toLowerCase()) {
             case "doctor":
-                intent = new Intent(Registration.this, Login.class);
+                intent = new Intent(Registration.this, Doctor_registration.class);
                 break;
             case "caretaker":
                 intent = new Intent(Registration.this, guideRegistrationActivity.class);

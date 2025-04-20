@@ -1,5 +1,5 @@
 package com.smritiraksha.Patient;
-
+//package com.smritiraksha.Patient.Games;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,9 +19,14 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.android.volley.Request;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.smritiraksha.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import android.app.NotificationChannel;
@@ -29,6 +35,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class MedicalReminderFragment extends Fragment {
@@ -42,6 +51,35 @@ public class MedicalReminderFragment extends Fragment {
     // Current Lottie file and message
     private String currentLottieFile = "clock_animation.json"; // Default animation
     private String currentMessage = "Welcome! Stay tuned for your reminders.";
+
+    private List<Prescription> prescriptions = new ArrayList<>();
+
+    private void fetchPrescriptionsFromServer() {
+        String patientId = "PATIENT123"; // Or get dynamically from logged-in user
+        String url = "https://yourserver.com/get_prescriptions.php?patient_id=" + patientId;
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                response -> {
+                    prescriptions.clear();
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            JSONObject obj = response.getJSONObject(i);
+                            prescriptions.add(new Prescription(
+                                    obj.getInt("hour"),
+                                    obj.getInt("minute"),
+                                    obj.getString("title"),
+                                    obj.getString("description")
+                            ));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                error -> Log.e("PrescriptionFetch", "Error: " + error.toString())
+        );
+
+        Volley.newRequestQueue(getContext()).add(jsonArrayRequest);
+    }
 
     @Nullable
     @Override
@@ -64,6 +102,15 @@ public class MedicalReminderFragment extends Fragment {
 
         // Start checking for notifications
         startNotificationChecker();
+
+        //project to prescription page
+        Button btnViewPrescription = view.findViewById(R.id.btnViewPrescription);
+        btnViewPrescription.setOnClickListener(v -> {requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, new ViewPrescriptionFragment()) // Replace with your container ID
+                .addToBackStack(null)
+                .commit();
+        });
 
         return view;
     }
@@ -188,6 +235,7 @@ public class MedicalReminderFragment extends Fragment {
         }
         // Unique ID for each notification
     }
+
 
     @Override
     public void onDestroy() {

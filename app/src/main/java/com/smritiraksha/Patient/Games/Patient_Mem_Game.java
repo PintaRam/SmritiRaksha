@@ -1,98 +1,115 @@
 package com.smritiraksha.Patient.Games;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.GridLayout;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.smritiraksha.R;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
-public class Patient_Mem_Game extends AppCompatActivity {
-    private final int[] images = {
-            R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4,
-            R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4
-    };
+public class Patient_Mem_Game extends Activity {
 
-    private ImageButton[] buttons;
-    private int firstCardIndex = -1, secondCardIndex = -1;
-    private boolean isProcessing = false;
-    private boolean[] matchedCards = new boolean[8]; // Tracks matched cards
+    private ImageButton[] cardButtons = new ImageButton[8];
+    private int[] cardImages = new int[8];
+    private boolean[] matched = new boolean[8];
+
+    private int firstCardIndex = -1;
+    private int secondCardIndex = -1;
+
+    private boolean isBusy = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_patient_mem_game);
 
-        GridLayout gridLayout = findViewById(R.id.gridLayout);
-        int numCards = images.length;
-        buttons = new ImageButton[numCards];
+        initCards();
+    }
 
-        // Shuffle images randomly
-        List<Integer> imageList = Arrays.asList(images[0], images[1], images[2], images[3],
-                images[4], images[5], images[6], images[7]);
-        Collections.shuffle(imageList);
-        for (int i = 0; i < numCards; i++) images[i] = imageList.get(i);
+    private void initCards() {
+        // Reference buttons
+        for (int i = 0; i < 8; i++) {
+            String buttonID = "card_" + i;
+            int resID = getResources().getIdentifier(buttonID, "id", getPackageName());
+            cardButtons[i] = findViewById(resID);
+        }
 
-        // Initialize buttons (cards)
-        for (int i = 0; i < numCards; i++) {
-            buttons[i] = new ImageButton(this);
-            buttons[i].setImageResource(R.drawable.card_back); // Initially all cards face down
-            buttons[i].setId(i);
-            buttons[i].setScaleType(ImageButton.ScaleType.CENTER_CROP);
-            buttons[i].setPadding(10, 10, 10, 10);
+        // Assign images (pairs)
+        ArrayList<Integer> images = new ArrayList<>();
+        images.add(R.drawable.image1);
+        images.add(R.drawable.image1);
+        images.add(R.drawable.image2);
+        images.add(R.drawable.image2);
+        images.add(R.drawable.image3);
+        images.add(R.drawable.image3);
+        images.add(R.drawable.image4);
+        images.add(R.drawable.image4);
+        Collections.shuffle(images);
 
+        // Store shuffled order
+        for (int i = 0; i < 8; i++) {
+            cardImages[i] = images.get(i);
+            matched[i] = false;
+            cardButtons[i].setImageResource(R.drawable.card_back);
             int finalI = i;
-            buttons[i].setOnClickListener(v -> handleCardClick(finalI));
-            gridLayout.addView(buttons[i]);
+            cardButtons[i].setOnClickListener(v -> onCardClick(finalI));
         }
     }
 
-    private void handleCardClick(int index) {
-        if (isProcessing || matchedCards[index]) return; // Ignore clicks on matched cards
+    public void onCardClick(int index) {
+        if (isBusy || matched[index]) return;
 
-        buttons[index].setImageResource(images[index]); // Show the selected card
+        // Flip the card
+        cardButtons[index].setImageResource(cardImages[index]);
 
         if (firstCardIndex == -1) {
             firstCardIndex = index;
-        } else {
+        } else if (secondCardIndex == -1 && index != firstCardIndex) {
             secondCardIndex = index;
-            isProcessing = true;
-            new Handler().postDelayed(this::checkMatch, 1000);
+            isBusy = true;
+
+            new Handler().postDelayed(() -> checkMatch(), 1000);
         }
     }
 
     private void checkMatch() {
-        if (images[firstCardIndex] == images[secondCardIndex]) {
-            matchedCards[firstCardIndex] = true;
-            matchedCards[secondCardIndex] = true;
+        if (cardImages[firstCardIndex] == cardImages[secondCardIndex]) {
+            matched[firstCardIndex] = true;
+            matched[secondCardIndex] = true;
+            Toast.makeText(this, "Matched!", Toast.LENGTH_SHORT).show();
         } else {
-            buttons[firstCardIndex].setImageResource(R.drawable.card_back);
-            buttons[secondCardIndex].setImageResource(R.drawable.card_back);
+            cardButtons[firstCardIndex].setImageResource(R.drawable.card_back);
+            cardButtons[secondCardIndex].setImageResource(R.drawable.card_back);
         }
 
         firstCardIndex = -1;
         secondCardIndex = -1;
-        isProcessing = false;
+        isBusy = false;
 
-        // Check if all pairs are found
-        boolean allMatched = true;
-        for (boolean matched : matchedCards) {
-            if (!matched) {
-                allMatched = false;
-                break;
-            }
+        checkGameEnd();
+    }
+
+    private void checkGameEnd() {
+        for (boolean m : matched) {
+            if (!m) return;
         }
-        if (allMatched) {
-            Toast.makeText(this, "Congratulations! You matched all pairs!", Toast.LENGTH_LONG).show();
-        }
+        Toast.makeText(this, "You completed the game!", Toast.LENGTH_LONG).show();
+    }
+
+    public void restartGame(View view) {
+        firstCardIndex = -1;
+        secondCardIndex = -1;
+        isBusy = false;
+        initCards();
+    }
+
+    public void exitGame(View view) {
+        finish();
     }
 }
+
