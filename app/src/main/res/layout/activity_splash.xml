@@ -21,9 +21,9 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_marginRight="50sp"
             android:layout_width="match_parent"
             android:layout_height="562dp"
+            android:layout_marginRight="50sp"
             android:layerType="software"
             android:layoutDirection="inherit"
             android:textAlignment="center"

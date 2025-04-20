@@ -1,0 +1,53 @@
+<!-- res/layout/fragment_doctor_prescription.xml -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ic_launcher_background"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/etPatientId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#F44336"
+            android:hint="Patient ID"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:textColorHint="#23ED08"
+            android:textColorLink="#E22416" />
+
+        <EditText
+            android:id="@+id/etPrescriptionTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Prescription Title"
+            android:minHeight="48dp"
+            android:textColorHint="#23ED08" />
+
+        <EditText
+            android:id="@+id/etPrescriptionDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Details (e.g. medicine or diet)"
+            android:minHeight="48dp"
+            android:textColorHint="#23ED08" />
+
+        <TimePicker
+            android:id="@+id/timePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner" />
+
+
+        <Button
+            android:id="@+id/btnSubmitPrescription"
+            android:text="Submit Prescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</ScrollView>
