@@ -20,18 +20,24 @@ import com.smritiraksha.R;
 public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientViewHolder> implements Filterable {
     private Context context;
     private ArrayList<Patients> patientList;
-    private ArrayList<Patients> patientListFull;  // Copy of original list for filtering
+    private ArrayList<Patients> patientListFull;
     private PatientClickListener listener;
 
     public interface PatientClickListener {
-        void onPatientClick(String patientId);
+        void onPatientClick(String patientId);  // or change to onPatientClick(Patients patient) if needed
     }
 
     public PatientAdapter(Context context, ArrayList<Patients> patientList, PatientClickListener listener) {
         this.context = context;
         this.patientList = patientList;
         this.listener = listener;
-        this.patientListFull = new ArrayList<>(patientList);  // Initialize the full patient list for filtering
+        this.patientListFull = new ArrayList<>(patientList);
+    }
+
+    public PatientAdapter(Context context, ArrayList<Patients> patientList) {
+        this.context = context;
+        this.patientList = patientList;
+        this.patientListFull = new ArrayList<>(patientList);
     }
 
     @NonNull
@@ -45,7 +51,8 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
     public void onBindViewHolder(@NonNull PatientViewHolder holder, int position) {
         Patients patient = patientList.get(position);
         holder.patientName.setText(patient.getName());
-        holder.itemView.setOnClickListener(v -> listener.onPatientClick(patient.getId()));  // Handle item click
+        holder.patientId.setText("ID: " + patient.getId());  // 🔁 ADDED: show patient ID
+        holder.itemView.setOnClickListener(v -> listener.onPatientClick(patient.getId())); // Optionally pass whole object
     }
 
     @Override
@@ -58,19 +65,20 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
         return patientFilter;
     }
 
-    private Filter patientFilter = new Filter() {
+    private final Filter patientFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             List<Patients> filteredList = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(patientListFull);  // No filtering, return the full list
+                filteredList.addAll(patientListFull);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (Patients patient : patientListFull) {
-                    if (patient.getName().toLowerCase().contains(filterPattern) || patient.getId().contains(filterPattern)) {
-                        filteredList.add(patient);  // Add matching patients to the filtered list
+                    if (patient.getName().toLowerCase().contains(filterPattern) ||
+                            patient.getId().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(patient);
                     }
                 }
             }
@@ -85,18 +93,19 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
         protected void publishResults(CharSequence constraint, FilterResults results) {
             patientList.clear();
             if (results.values != null) {
-                patientList.addAll((List) results.values);  // Update patient list with filtered data
+                patientList.addAll((List<Patients>) results.values);
             }
-            notifyDataSetChanged();  // Notify the adapter to update the RecyclerView
+            notifyDataSetChanged();
         }
     };
 
     public static class PatientViewHolder extends RecyclerView.ViewHolder {
-        TextView patientName;
+        TextView patientName, patientId;  // 🔁 ADDED: patient ID reference
 
         public PatientViewHolder(View itemView) {
             super(itemView);
-            patientName = itemView.findViewById(R.id.patient_name);  // Assuming patient name is displayed
+            patientName = itemView.findViewById(R.id.patient_name);
+            patientId = itemView.findViewById(R.id.patient_id);  // 🔁 ADDED: make sure this ID exists in layout
         }
     }
 }

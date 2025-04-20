@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="padding_normal">32dp</dimen>
+    <dimen name="margin_top_default">16dp</dimen>
+</resources>

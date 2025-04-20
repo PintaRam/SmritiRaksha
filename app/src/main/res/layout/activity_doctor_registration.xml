@@ -13,7 +13,7 @@
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieAnimationView"
         android:layout_width="281dp"
-        android:layout_height="199dp"
+        android:layout_height="167dp"
         android:layout_gravity="center"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
@@ -91,16 +91,16 @@
 
                 <!-- Guide ID -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/guideIdLayout"
+                    android:id="@+id/HospnameLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/guideIdEditText"
+                        android:id="@+id/HosnameEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Guide ID" />
+                        android:hint="Hospital Name" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Confirmation Button -->

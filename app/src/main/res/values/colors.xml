@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="appBackground">#F4F6F9</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue_green">#2fa7c9</color>
@@ -21,5 +22,22 @@
     <color name="red_700">#D32F2F</color>
     <color name="green_700">#388E3C</color>  <!-- Dark Green -->
     <color name="green_500">#4CAF50</color>  <!-- Medium Green -->
+
+    <!-- Secondary and Support Colors -->
+    <color name="colorSecondary">#64B5F6</color> <!-- Light Blue -->
+    <color name="colorPrimaryLight">#E3F2FD</color> <!-- Very light background -->
+
+    <!-- Status/Alerts -->
+    <color name="colorSuccess">#4CAF50</color> <!-- Green for success -->
+    <color name="colorWarning">#FFC107</color> <!-- Amber for warnings -->
+    <color name="colorDanger">#F44336</color> <!-- Red for errors -->
+    <color name="colorPrimary">#1976D2</color>
+    <color name="colorPrimaryDark">#004BA0</color>
+    <color name="colorAccent">#FFC107</color>
+    <color name="backgroundLight">#F9F9F9</color>
+    <color name="textPrimary">#212121</color>
+    <color name="cardBackground">#FFFFFF</color>
+    <color name="alertRed">#D32F2F</color>
+    <color name="alertYellow">#FBC02D</color>
 
 </resources>

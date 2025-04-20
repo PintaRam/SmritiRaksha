@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -23,6 +24,16 @@
         android:theme="@style/Theme.SmritiRaksha"
         tools:targetApi="31">
         <activity
+            android:name=".Doctor.PatientSelectionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Doctor.EditPrescriptionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Doctor.DoctorDashboard"
+            android:exported="false"
+            android:theme="@style/Theme.SmritiRaksha" />
+        <activity
             android:name=".Patient.Games.memoryGameSplash"
             android:exported="false" />
 
@@ -39,7 +50,6 @@
         <activity
             android:name=".CareTaker.MedicalSchedule"
             android:exported="false" />
-
         <activity
             android:name=".Patient.Games.Wordsearchsplash"
             android:exported="false" />
