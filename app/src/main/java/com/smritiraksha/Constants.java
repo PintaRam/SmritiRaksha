@@ -30,6 +30,11 @@ public class Constants {
     public static  String Patient_location= Root_URL+"updatePatientLocation.php";
     public static  String Get_Patient_location= Root_URL+"get_patient_location.php";
 
+    public static String Doc_Register=Root_URL+"DoctorRegistration.php";
+
+    public static String All_Patinets=Root_URL+"AllPatinets.php";
+    public static String Doc_Info_API=Root_URL+"DoctorInfo.php";
+
 }
 //ngrok config add-authtoken 2pU1y8rkrxYIsyfSJO8fzXSgM8Y_35H6ZALE1Nmx9h5XEZGiC
 //ngrok http http://localhost:80
