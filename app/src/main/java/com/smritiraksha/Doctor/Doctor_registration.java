@@ -191,12 +191,23 @@ public class Doctor_registration extends AppCompatActivity {
                     response -> {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
-                            Toast.makeText(this, jsonResponse.getString("message"), Toast.LENGTH_SHORT).show();
+                            String message = jsonResponse.getString("message");
+                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
+                            if (!jsonResponse.getBoolean("error")) {
+                                // Navigate to DoctorDashboard
+                                Intent intent = new Intent(Doctor_registration.this, DoctorDashboard.class);
+                                intent.putExtra("userEmail", DocEmail); // pass email if needed
+                                startActivity(intent);
+                                finish(); // optional: closes the current activity
+                            }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(this, "Invalid response", Toast.LENGTH_SHORT).show();
                         }
                     },
+
                     error -> Toast.makeText(this, "Volley Error: " + error.getMessage(), Toast.LENGTH_SHORT).show()
             ) {
                 @Override

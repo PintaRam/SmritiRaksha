@@ -43,8 +43,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class tracking_nav extends Fragment implements OnMapReadyCallback {
     private float allowedRadius = 500f; // default in meters
@@ -83,11 +85,53 @@ public class tracking_nav extends Fragment implements OnMapReadyCallback {
                 etRadius.setVisibility(View.VISIBLE);
                 btnSetRadius.setText("Save Radius");
             } else {
-                String radiusStr = etRadius.getText().toString();
+                String radiusStr = etRadius.getText().toString().trim();
                 if (!radiusStr.isEmpty()) {
-                    allowedRadius = Float.parseFloat(radiusStr);
-                    Toast.makeText(getContext(), "Radius set to " + allowedRadius + " meters", Toast.LENGTH_SHORT).show();
+                    try {
+                        allowedRadius = Float.parseFloat(radiusStr);
+                        Toast.makeText(getContext(), "Radius set to " + allowedRadius + " meters", Toast.LENGTH_SHORT).show();
+
+                        // Send to backend
+                        String RADIUS_UPDATE_URL = Constants.UPDATE_RADIUS_URL; // Define in Constants.java
+
+                        Map<String, String> params = new HashMap<>();
+                        params.put("patient_id", patientId);
+                        params.put("radius", String.valueOf(allowedRadius));
+
+                        JSONObject postData = new JSONObject(params);
+
+                        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, RADIUS_UPDATE_URL, postData,
+                                response -> {
+                                    Log.d("RadiusUpdate", "Response: " + response.toString());
+                                    try {
+                                        boolean error = response.getBoolean("error");
+                                        String message = response.getString("message");
+                                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getContext(), "Error parsing response", Toast.LENGTH_SHORT).show();
+                                    }
+                                },
+                                error -> {
+                                    Log.e("RadiusUpdate", "Volley error: " + error.toString());
+                                    Toast.makeText(getContext(), "Failed to update radius", Toast.LENGTH_SHORT).show();
+                                }
+                        ) {
+                            @Override
+                            public String getBodyContentType() {
+                                return "application/json; charset=utf-8";
+                            }
+                        };
+
+                        requestQueue.add(request);
+
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(getContext(), "Invalid radius input", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Radius cannot be empty", Toast.LENGTH_SHORT).show();
                 }
+
                 etRadius.setVisibility(View.GONE);
                 btnSetRadius.setText("Set Radius");
             }
@@ -252,6 +296,31 @@ public class tracking_nav extends Fragment implements OnMapReadyCallback {
             locationTextView.setText("Failed to fetch address");
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Helper class to store time with location
     private static class TimedLocation {
