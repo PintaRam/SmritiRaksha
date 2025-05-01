@@ -200,7 +200,7 @@ public class patient extends AppCompatActivity {
                             Log.e("Server Response", "Response: " + response);
                             Toast.makeText(this, "Patient registered successfully!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(patient.this, MainActivity.class);
-                            intent.putExtra("userEmail" , email);
+                            intent.putExtra("PatientEmail" , email);
                             startActivity(intent);
                             finish();
                         }

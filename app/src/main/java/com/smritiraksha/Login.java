@@ -162,12 +162,15 @@ public class Login extends AppCompatActivity {
                         switch (role) {
                             case "Doctor":
                                 intent = new Intent(Login.this, DoctorDashboard.class);
+                                intent.putExtra("DocEmail",email);
                                 break;
                             case "Caretaker":
                                 intent = new Intent(Login.this, guidesMainActivity.class);
+                                intent.putExtra("CareEmail",email);
                                 break;
                             case "Patient":
                                 intent = new Intent(Login.this, MainActivity.class);
+                                intent.putExtra("PatEmail",email);
                                 break;
                             default:
                                 Toast.makeText(Login.this, "Invalid role. Please try again.", Toast.LENGTH_SHORT).show();

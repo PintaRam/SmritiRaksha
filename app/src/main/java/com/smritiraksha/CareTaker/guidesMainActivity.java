@@ -72,9 +72,13 @@ public class guidesMainActivity extends AppCompatActivity {
         btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleProfileDrawer();
+                openProfileFragment("Guide ID", "Guide Name", "Guide Contact",
+                        "Patient Name", "Patient ID", "Contact", "Age",
+                        "Gender", "Email");
+                toggleProfileDrawer(); // Open the drawer after loading the fragment
             }
         });
+
 
         // Fetch User and Patient Details
         fetchPatientAndGuideDetails("PT01Sri", "guide2@gmail.com");
@@ -129,8 +133,9 @@ public class guidesMainActivity extends AppCompatActivity {
         queue.add(request);
     }
 
-    private void openProfileFragment(String guideId, String guideName, String guideContact, String patientName, String patientId,
-                                     String contact, String age, String gender, String email) {
+    private void openProfileFragment(String guideId, String guideName, String guideContact,
+                                     String patientName, String patientId, String contact,
+                                     String age, String gender, String email) {
         guide_profile guideProfileFragment = new guide_profile();
         Bundle bundle = new Bundle();
         bundle.putString("guideId", guideId);
@@ -143,16 +148,19 @@ public class guidesMainActivity extends AppCompatActivity {
         bundle.putString("gender", gender);
         bundle.putString("email", email);
         guideProfileFragment.setArguments(bundle);
+
+        // Replace fragment in the drawer container
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.profile_drawer, guideProfileFragment);
         transaction.commit();
     }
 
+
     private void toggleProfileDrawer() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
+            drawerLayout.closeDrawer(GravityCompat.START); // Close the drawer if it's already open
         } else {
-            drawerLayout.openDrawer(GravityCompat.START);
+            drawerLayout.openDrawer(GravityCompat.START); // Open the drawer if it's closed
         }
     }
 }

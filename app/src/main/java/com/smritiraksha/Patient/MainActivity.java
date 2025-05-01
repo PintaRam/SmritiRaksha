@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private JSONObject userDetails;
     private MediaPlayer mediaPlayer;
-    private String email = "patient1@gmail.com"; // Replace dynamically if needed
+    private ImageButton profileButton;
+    private String email;// = "patient1@gmail.com"; // Replace dynamically if needed
     private EmergencyReceiver emergencyReceiver;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -55,9 +56,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loadFragment(new DashboardFragment());
+        email=getIntent().getStringExtra("PatEmail");
 
         drawerLayout = findViewById(R.id.drawer_layout);
-        ImageButton profileButton = findViewById(R.id.btn_profile);
+        profileButton = findViewById(R.id.btn_profile);
+        profileButton.setEnabled(false);
 
         profileButton.setOnClickListener(view -> toggleProfileDrawer());
 
@@ -103,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
                     userDetails = response.optJSONObject("patient_data"); // Extract "patient_data" safely
                     if (userDetails == null) {
                         Toast.makeText(MainActivity.this, "No patient data found in response", Toast.LENGTH_SHORT).show();
+                    } else {
+                        profileButton.setEnabled(true); // Enable only when data is ready
                     }
                 },
                 error -> {
