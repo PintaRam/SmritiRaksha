@@ -50,134 +50,134 @@
                 android:elevation="4dp"
                 android:layout_marginBottom="16dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Patient Details"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="#333333"
-                    android:padding="12dp" />
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Patient Details"-->
+<!--                    android:textSize="20sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textColor="#333333"-->
+<!--                    android:padding="12dp" />-->
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp">
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="8dp"-->
+<!--                    app:cardCornerRadius="8dp"-->
+<!--                    app:cardElevation="4dp">-->
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/patient_id"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:text="Patient ID: fjj"
-                        android:textSize="16sp"
-                        android:textColor="#333333" />
-                </com.google.android.material.card.MaterialCardView>
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        android:id="@+id/patient_id"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:padding="12dp"-->
+<!--                        android:text="Patient ID: fjj"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textColor="#333333" />-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp">
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="8dp"-->
+<!--                    app:cardCornerRadius="8dp"-->
+<!--                    app:cardElevation="4dp">-->
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/patient_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:text="Name: Pinta Ram"
-                        android:textSize="16sp"
-                        android:textColor="#333333" />
-                </com.google.android.material.card.MaterialCardView>
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        android:id="@+id/patient_name"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:padding="12dp"-->
+<!--                        android:text="Name: Pinta Ram"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textColor="#333333" />-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp">
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="8dp"-->
+<!--                    app:cardCornerRadius="8dp"-->
+<!--                    app:cardElevation="4dp">-->
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/patient_contact"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:text="Contact: 8618578794"
-                        android:textSize="16sp"
-                        android:textColor="#333333" />
-                </com.google.android.material.card.MaterialCardView>
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        android:id="@+id/patient_contact"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:padding="12dp"-->
+<!--                        android:text="Contact: 8618578794"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textColor="#333333" />-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp">
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="8dp"-->
+<!--                    app:cardCornerRadius="8dp"-->
+<!--                    app:cardElevation="4dp">-->
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/patient_age"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:text="Age: 25"
-                        android:textSize="16sp"
-                        android:textColor="#333333" />
-                </com.google.android.material.card.MaterialCardView>
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        android:id="@+id/patient_age"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:padding="12dp"-->
+<!--                        android:text="Age: 25"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textColor="#333333" />-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp">
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="8dp"-->
+<!--                    app:cardCornerRadius="8dp"-->
+<!--                    app:cardElevation="4dp">-->
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/patient_gender"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:text="Gender: Male"
-                        android:textSize="16sp"
-                        android:textColor="#333333" />
-                </com.google.android.material.card.MaterialCardView>
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        android:id="@+id/patient_gender"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:padding="12dp"-->
+<!--                        android:text="Gender: Male"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textColor="#333333" />-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp">
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="8dp"-->
+<!--                    app:cardCornerRadius="8dp"-->
+<!--                    app:cardElevation="4dp">-->
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/patient_email"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:text="Email: pintu.borana20@gmail.com"
-                        android:textSize="16sp"
-                        android:textColor="#333333" />
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        android:id="@+id/patient_email"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:padding="12dp"-->
+<!--                        android:text="Email: pintu.borana20@gmail.com"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textColor="#333333" />-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
+<!--            </LinearLayout>-->
 
-            <!-- Guide Details Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:elevation="4dp"
-                android:layout_marginBottom="16dp">
+<!--            &lt;!&ndash; Guide Details Section &ndash;&gt;-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical"-->
+<!--                android:elevation="4dp"-->
+<!--                android:layout_marginBottom="16dp">-->
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Guide Details"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="#333333"
-                    android:padding="12dp" />
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Guide Details"-->
+<!--                    android:textSize="20sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textColor="#333333"-->
+<!--                    android:padding="12dp" />-->
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
@@ -191,7 +191,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="12dp"
-                        android:text="Guide ID: pintu369"
+                        android:text="Guide ID:"
                         android:textSize="16sp"
                         android:textColor="#333333" />
                 </com.google.android.material.card.MaterialCardView>
@@ -208,7 +208,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="12dp"
-                        android:text="Guide Name: Pinta Ram"
+                        android:text="Guide Name:"
                         android:textSize="16sp"
                         android:textColor="#333333" />
                 </com.google.android.material.card.MaterialCardView>
@@ -225,7 +225,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="12dp"
-                        android:text="Contact: 6361706908"
+                        android:text="Contact:"
                         android:textSize="16sp"
                         android:textColor="#333333" />
                 </com.google.android.material.card.MaterialCardView>
@@ -242,7 +242,59 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="12dp"
-                        android:text="Email: guide2@gmail.com"
+                        android:text="Email:"
+                        android:textSize="16sp"
+                        android:textColor="#333333" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/guide_gender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:text="Gender :"
+                        android:textSize="16sp"
+                        android:textColor="#333333" />
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/guide_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:text="Address: "
+                        android:textSize="16sp"
+                        android:textColor="#333333" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/patinet_Email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:text="Patient_ Email:"
                         android:textSize="16sp"
                         android:textColor="#333333" />
                 </com.google.android.material.card.MaterialCardView>

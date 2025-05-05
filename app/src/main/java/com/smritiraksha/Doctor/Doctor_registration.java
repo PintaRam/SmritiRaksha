@@ -23,6 +23,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.smritiraksha.Constants;
+import com.smritiraksha.Login;
 import com.smritiraksha.R;
 
 import org.json.JSONArray;
@@ -196,7 +197,7 @@ public class Doctor_registration extends AppCompatActivity {
 
                             if (!jsonResponse.getBoolean("error")) {
                                 // Navigate to DoctorDashboard
-                                Intent intent = new Intent(Doctor_registration.this, DoctorDashboard.class);
+                                Intent intent = new Intent(Doctor_registration.this, Login.class);
                                 intent.putExtra("userEmail", DocEmail); // pass email if needed
                                 startActivity(intent);
                                 finish(); // optional: closes the current activity

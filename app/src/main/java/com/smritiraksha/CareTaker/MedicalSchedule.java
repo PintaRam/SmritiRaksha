@@ -1,6 +1,7 @@
 package com.smritiraksha.CareTaker;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TimePicker;
@@ -28,7 +29,9 @@ public class MedicalSchedule extends AppCompatActivity {
     private TimePicker timePicker;
     private MaterialButton setReminderButton;
     private Button medbckbtn;
-    private final String API_URL= Constants.Remainder_URL;
+
+    private String Pemial,Ctemail;
+
 
 
     @Override
@@ -43,6 +46,8 @@ public class MedicalSchedule extends AppCompatActivity {
         dosage = findViewById(R.id.dosage);
         timePicker = findViewById(R.id.time_picker);
         setReminderButton = findViewById(R.id.set_reminder_button);
+        Pemial=getIntent().getStringExtra("Patient_Email");
+        Ctemail=getIntent().getStringExtra("GuideMail");
 
         setReminderButton.setOnClickListener(v -> submitMedicationReminder(v));
 
@@ -72,9 +77,7 @@ public class MedicalSchedule extends AppCompatActivity {
         int hour = timePicker.getHour();
         int minute = timePicker.getMinute();
 
-        // Validation
         boolean isValid = true;
-
         if (medicine.isEmpty()) {
             medicineNameLayout.setError("Medicine name is required");
             isValid = false;
@@ -89,33 +92,39 @@ public class MedicalSchedule extends AppCompatActivity {
             dosageLayout.setError(null);
         }
 
-        if (!isValid) return; // Stop if validation fails
+        if (!isValid) return;
+        Log.d("Parameters", "Patient Email: " + Pemial);
+        Log.d("Parameters", "Guide Name: " + Ctemail);
+        Log.d("Parameters", "Dosage: " + dose);
+        Log.d("Parameters", "Time: " + hour + ":" + minute);
 
-        // Prepare data for API
+
         Map<String, String> params = new HashMap<>();
-        params.put("medicine", medicine);
-        params.put("dosage", dose);
+        params.put("patient_mail", Pemial);          // Patient email
+        params.put("title", medicine);               // Medicine name
+        params.put("description", dose);             // Dosage
         params.put("hour", String.valueOf(hour));
         params.put("minute", String.valueOf(minute));
-        params.put("patient_id", "123"); // Replace with actual patient ID
-        params.put("guide_id","test");
+        params.put("guide", Ctemail);                // Guide email
 
         sendToServer(params, view);
     }
 
+
     private void sendToServer(Map<String, String> params, View view) {
         RequestQueue queue = Volley.newRequestQueue(this);
-
-        StringRequest request = new StringRequest(Request.Method.POST, API_URL,
-                response -> Snackbar.make(view, "Reminder Set Successfully!", Snackbar.LENGTH_LONG).show(),
-                error -> Snackbar.make(view, "Failed to set reminder", Snackbar.LENGTH_LONG).show()) {
-
+        StringRequest request = new StringRequest(Request.Method.POST, Constants.SAVE_PRESCRIPTION,
+                response -> Snackbar.make(view, "Prescription added successfully", Snackbar.LENGTH_LONG).show(),
+                error -> Snackbar.make(view, "Failed to add prescription: " + error.getMessage(), Snackbar.LENGTH_LONG).show()
+        ) {
             @Override
             protected Map<String, String> getParams() {
                 return params;
             }
         };
-
         queue.add(request);
     }
+
+
+
 }

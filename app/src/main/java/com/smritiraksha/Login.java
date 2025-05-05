@@ -64,7 +64,7 @@ public class Login extends AppCompatActivity {
         // Login TextView (used to redirect to the Registration activity)
         findViewById(R.id.loginTextView).setOnClickListener(v -> {
             Toast.makeText(Login.this, "Redirecting to Register...", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(Login.this, MainActivity.class);
+            Intent intent = new Intent(Login.this, Registration.class);
             startActivity(intent);
         });
     }

@@ -36,6 +36,7 @@ public class guidesMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guides_main);
 
+
         // Initialize Views
         drawerLayout = findViewById(R.id.drawer_layout);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -55,7 +56,17 @@ public class guidesMainActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.navigation_live_tracking) {
                     selectedFragment = new tracking_nav();
                 } else if (item.getItemId() == R.id.navigation_reminder) {
-                    selectedFragment = new remainder_guide();
+                    selectedFragment=new remainder_guide();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("CareEmail",getIntent().getStringExtra("CareEmail")); // pass the email string
+                    //bundle.putString("PatEmail",getIntent().getStringExtra(""));
+                    selectedFragment.setArguments(bundle); // set arguments
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, selectedFragment)
+                            .commit();
+                    selectedFragment.setArguments(bundle);
                 } else if (item.getItemId() == R.id.navigation_emergency) {
                     selectedFragment = new emergency_guide();
                 }
@@ -74,7 +85,7 @@ public class guidesMainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 openProfileFragment("Guide ID", "Guide Name", "Guide Contact",
                         "Patient Name", "Patient ID", "Contact", "Age",
-                        "Gender", "Email");
+                        "Gender", getIntent().getStringExtra("CareEmail"));
                 toggleProfileDrawer(); // Open the drawer after loading the fragment
             }
         });
@@ -148,6 +159,11 @@ public class guidesMainActivity extends AppCompatActivity {
         bundle.putString("gender", gender);
         bundle.putString("email", email);
         guideProfileFragment.setArguments(bundle);
+
+        // Use the correct key "CareEmail"
+        bundle.putString("CareEmail", email);
+        guideProfileFragment.setArguments(bundle);
+
 
         // Replace fragment in the drawer container
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

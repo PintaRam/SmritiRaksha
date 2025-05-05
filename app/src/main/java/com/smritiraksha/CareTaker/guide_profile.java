@@ -5,57 +5,87 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.Request;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.textview.MaterialTextView;
+import com.smritiraksha.Constants;
 import com.smritiraksha.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class guide_profile extends Fragment {
+
+    private MaterialTextView guideIdTextView, guideNameTextView, guideContactTextView,
+            guideEmailTextView, guideGenderTextView, guideAddressTextView, patientEmailTextView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the fragment_guide_profile layout.
         View rootView = inflater.inflate(R.layout.fragment_guide_profile, container, false);
 
-        // Get the data passed as arguments.
+        // Initialize guide-only views
+        guideIdTextView = rootView.findViewById(R.id.guide_id);
+        guideNameTextView = rootView.findViewById(R.id.guide_name);
+        guideContactTextView = rootView.findViewById(R.id.guide_contact);
+        guideEmailTextView = rootView.findViewById(R.id.guide_email);
+        guideGenderTextView = rootView.findViewById(R.id.guide_gender);
+        guideAddressTextView = rootView.findViewById(R.id.guide_address);
+        patientEmailTextView = rootView.findViewById(R.id.patinet_Email);
+
         if (getArguments() != null) {
-            String guideId = getArguments().getString("guideId", "No Guide ID");
-            String guideName = getArguments().getString("guideName", "No Name");
-            String guideContact = getArguments().getString("guideContact", "No Contact");
-            String patientName = getArguments().getString("patientName", "No Patient Name");
-            String patientId = getArguments().getString("patientId", "No Patient ID");
-            String contact = getArguments().getString("contact", "No Contact");
-            String age = getArguments().getString("age", "No Age");
-            String gender = getArguments().getString("gender", "No Gender");
-            String email = getArguments().getString("email", "No Email");
-
-            // Log the guide details for debugging.
-            Log.d("GuideProfile", "Guide ID: " + guideId);  // Print the guide ID in log.
-
-            // Display the guide and patient information in MaterialCardView's TextViews.
-            MaterialTextView guideIdTextView = rootView.findViewById(R.id.guide_id); // Add a TextView to display guide ID
-            MaterialTextView guideNameTextView = rootView.findViewById(R.id.guide_name);
-            MaterialTextView guideContactTextView = rootView.findViewById(R.id.guide_contact);
-            MaterialTextView patientNameTextView = rootView.findViewById(R.id.patient_name);
-            MaterialTextView patientIdTextView = rootView.findViewById(R.id.patient_id);
-            MaterialTextView patientContactTextView = rootView.findViewById(R.id.patient_contact);
-            MaterialTextView patientAgeTextView = rootView.findViewById(R.id.patient_age);
-            MaterialTextView patientGenderTextView = rootView.findViewById(R.id.patient_gender);
-            MaterialTextView patientEmailTextView = rootView.findViewById(R.id.patient_email);
-
-            // Setting the TextViews with the passed values.
-            guideIdTextView.setText("Guide ID: " + guideId);  // Display Guide ID
-            guideNameTextView.setText("Guide: " + guideName);
-            guideContactTextView.setText("Guide Contact: " + guideContact);
-            patientNameTextView.setText("Patient: " + patientName);
-            patientIdTextView.setText("Patient ID: " + patientId);
-            patientContactTextView.setText("Patient Contact: " + contact);
-            patientAgeTextView.setText("Age: " + age);
-            patientGenderTextView.setText("Gender: " + gender);
-            patientEmailTextView.setText("Email: " + email);
+            String guideEmail = getArguments().getString("CareEmail", "");
+            if (!guideEmail.isEmpty()) {
+                loadGuideProfile(guideEmail);
+            } else {
+                Toast.makeText(getContext(), "Guide email is missing", Toast.LENGTH_SHORT).show();
+            }
         }
-
         return rootView;
+    }
+    private void loadGuideProfile(String guideEmail) {
+        String url = Constants.GuideInfo;
+
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getBoolean("status")) {
+                            JSONObject caretaker = jsonObject.getJSONObject("caretaker");
+
+                            guideIdTextView.setText("Guide ID: " + caretaker.optString("guide_id", "N/A"));
+                            guideNameTextView.setText("Guide Name: " + caretaker.optString("name", "N/A"));
+                            guideContactTextView.setText("Contact: " + caretaker.optString("contact_number", "N/A"));
+                            guideEmailTextView.setText("Email: " + caretaker.optString("email", "N/A"));
+                            guideGenderTextView.setText("Gender: " + caretaker.optString("gender", "N/A"));
+                            guideAddressTextView.setText("Address: " + caretaker.optString("address", "N/A"));
+                            patientEmailTextView.setText("Patient Email: " + caretaker.optString("patient", "N/A")); // Assuming 'patient' is email
+                        } else {
+                            Toast.makeText(getContext(), "Guide not found", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(getContext(), "Error parsing data", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+                },
+                error -> Toast.makeText(getContext(), "Network error: " + error.getMessage(), Toast.LENGTH_SHORT).show()
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("CTemail", guideEmail);
+                return params;
+            }
+        };
+
+        Volley.newRequestQueue(getContext()).add(request);
     }
 }

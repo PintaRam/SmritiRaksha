@@ -2,6 +2,7 @@ package com.smritiraksha.CareTaker;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,25 +15,32 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.smritiraksha.Constants;
+import com.smritiraksha.Login;
 import com.smritiraksha.R;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class guideRegistrationActivity extends AppCompatActivity {
 
-    private TextInputEditText guideNameEditText, guideIdEditText, guideContactEditText, guideAddressEditText;
+    private TextInputEditText guideNameEditText, guideIdEditText, guideContactEditText, guideAddressEditText,patientIdEditText;
     private MaterialAutoCompleteTextView guideGenderAutoCompleteTextView;
     private ProgressDialog progressDialog;
+
     String guideEmail = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +55,7 @@ public class guideRegistrationActivity extends AppCompatActivity {
         guideContactEditText = findViewById(R.id.et_guide_contact);
         guideAddressEditText = findViewById(R.id.et_guide_address);
         guideGenderAutoCompleteTextView = findViewById(R.id.et_guide_gender);
+        patientIdEditText=findViewById(R.id.et_select_patient);
 
         // Progress dialog
         progressDialog = new ProgressDialog(this);
@@ -69,6 +78,13 @@ public class guideRegistrationActivity extends AppCompatActivity {
             enhancedButtonAnimation(registerButton); // Button press animation
             registerGuide(); // Guide registration logic
         });
+        patientIdEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fetchAllPatients();
+            }
+        });
+
     }
 
     private void registerGuide() {
@@ -77,6 +93,7 @@ public class guideRegistrationActivity extends AppCompatActivity {
         String guideContact = guideContactEditText.getText().toString().trim();
         String guideAddress = guideAddressEditText.getText().toString().trim();
         String guideGender = guideGenderAutoCompleteTextView.getText().toString().trim();
+        String patient=patientIdEditText.getText().toString().trim();
 
 
         // Validation
@@ -102,6 +119,10 @@ public class guideRegistrationActivity extends AppCompatActivity {
         }
         if (TextUtils.isEmpty(guideGender)) {
             guideGenderAutoCompleteTextView.setError("Gender is required!");
+            return;
+        }
+        if (TextUtils.isEmpty(patient)) {
+            patientIdEditText.setError("Please select a patient");
             return;
         }
 
@@ -145,6 +166,7 @@ public class guideRegistrationActivity extends AppCompatActivity {
                 params.put("address", guideAddress);
                 params.put("gender", guideGender);
                 params.put("email", guideEmail);
+                params.put("patient", patientIdEditText.getText().toString().trim());
                 return params;
             }
         };
@@ -154,7 +176,7 @@ public class guideRegistrationActivity extends AppCompatActivity {
 
     private void navigateToDashboard() {
         // Navigate to dashboard after successful registration
-        Intent intent = new Intent(guideRegistrationActivity.this, guidesMainActivity.class);
+        Intent intent = new Intent(guideRegistrationActivity.this, Login.class);
         intent.putExtra("userEmail" , guideEmail);
         startActivity(intent);
         finish();
@@ -167,5 +189,59 @@ public class guideRegistrationActivity extends AppCompatActivity {
         animatorSet.playTogether(scaleX, scaleY);
         animatorSet.setDuration(300);
         animatorSet.start();
+    }
+    private void fetchAllPatients() {
+        String url = Constants.All_Patinets;
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        if (!jsonResponse.getBoolean("error")) {
+                            JSONArray patientsArray = jsonResponse.getJSONArray("patients");
+
+                            List<String> displayList = new ArrayList<>();
+                            List<String> idList = new ArrayList<>();
+                            List<String> emailList = new ArrayList<>();
+
+                            for (int i = 0; i < patientsArray.length(); i++) {
+                                JSONObject patient = patientsArray.getJSONObject(i);
+                                String name = patient.getString("patient_name");
+                                String id = patient.getString("patient_id");
+                                String email = patient.getString("email"); // Make sure your serve
+
+                                // For display
+                                displayList.add(name + " (" + id + ")");
+                                // For storing ID
+                                idList.add(id);
+                                emailList.add(email);
+                            }
+
+                            showPatientDialog(displayList,emailList);
+                        } else {
+                            Toast.makeText(this, "Failed: " + jsonResponse.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> Toast.makeText(this, "Volley Error: " + error.getMessage(), Toast.LENGTH_SHORT).show()
+        );
+
+        queue.add(stringRequest);
+    }
+    private void showPatientDialog(List<String> displayList, List<String> emailList) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Patient");
+
+        String[] displayNames = displayList.toArray(new String[0]);
+
+        builder.setItems(displayNames, (dialog, which) -> {
+            // Set the selected patient's email (not ID) in the patientIdEditText
+            patientIdEditText.setText(emailList.get(which)); // Now set the email
+        });
+
+        builder.show();
     }
 }
