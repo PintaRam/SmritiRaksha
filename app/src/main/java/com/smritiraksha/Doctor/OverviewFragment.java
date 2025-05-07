@@ -1,5 +1,6 @@
 package com.smritiraksha.Doctor;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +71,11 @@ public class OverviewFragment extends Fragment implements OnMapReadyCallback {
     private FrameLayout mapOverlay;
     private boolean isChartAnimated = false;
 
+    private String patientId;
+    private String patientName;
+
+
+
     // Example data
     private List<LocationData> locationList = Arrays.asList(
             new LocationData("10:00", 13.0117, 77.6851),
@@ -106,6 +113,8 @@ public class OverviewFragment extends Fragment implements OnMapReadyCallback {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            patientId = getArguments().getString("patient_id");
+            patientName = getArguments().getString("patient_name");
         }
     }
 
@@ -114,6 +123,11 @@ public class OverviewFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
+
+
+
+        Log.d("OverviewFragment", "Patient ID: " + patientId);
+        Log.d("OverviewFragment", "Patient Name: " + patientName);
 
         // 🚀 Call the function to fetch data
         fetchPatientDetails(view);
@@ -184,10 +198,10 @@ public class OverviewFragment extends Fragment implements OnMapReadyCallback {
 
     // Method to fetch patient data and update the UI
     private void fetchPatientDetails(View view) {
-        String url = Constants.FETCH_PATIENT_URL; // Your PHP API endpoint
+        String url = Constants.FETCH_PATIENT_BYID; // Your PHP API endpoint
 
         // Make the network request to your API (example using Volley)
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url + "?email=" + patienEmail,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url + "?id=" + patientId,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -202,6 +216,7 @@ public class OverviewFragment extends Fragment implements OnMapReadyCallback {
                                 String name = patientData.getString("patient_name");
                                 String patientId = patientData.getString("patient_name");
                                 String guidename = patientData.getString("guide_name");
+
                                 //String dementiaStage = patientData.getString("guide_name");
                                 //String status = patientData.getString("Status");
                                 //String lastVisit = patientData.getString("LastVisit");
@@ -220,6 +235,8 @@ public class OverviewFragment extends Fragment implements OnMapReadyCallback {
                                 dementiaStageView.setText("🧠 Dementia Stage: ");
                                 statusView.setText("📊 Status: ");
                                 lastVisitView.setText("⏱ Last Visit: ");
+
+
 
                             } else {
                                 Toast.makeText(getContext(), "Error fetching patient data", Toast.LENGTH_SHORT).show();

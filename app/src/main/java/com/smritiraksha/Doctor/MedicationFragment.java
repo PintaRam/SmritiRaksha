@@ -1,11 +1,14 @@
 package com.smritiraksha.Doctor;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.smritiraksha.Constants;
 import com.smritiraksha.R;
 
 import org.json.JSONArray;
@@ -42,7 +46,8 @@ public class MedicationFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<Prescription> prescriptionList = new ArrayList<>();
     private PrescriptionAdapter adapter;
-    private String patientEmail = "patient@example.com";
+    private String patientEmail ;
+    private static final int EDIT_PRESCRIPTION_REQUEST = 100;
 
     public MedicationFragment() {
         // Required empty public constructor
@@ -72,6 +77,13 @@ public class MedicationFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            if (getArguments().containsKey("patientEmail")) {
+                patientEmail = getArguments().getString("patientEmail");
+                Log.d("MedicationFragment", "Received patientEmail: " + patientEmail);
+            } else {
+                Log.e("MedicationFragment", "patientEmail not found in arguments");
+            }
+
         }
     }
 
@@ -83,47 +95,77 @@ public class MedicationFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.prescriptionRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new PrescriptionAdapter(getContext(), prescriptionList);
+        Log.d("Medical Fragment",patientEmail);
+
+        adapter = new PrescriptionAdapter(getContext(), prescriptionList, prescription -> {
+            Intent intent = new Intent(getActivity(), EditPrescriptionActivity.class);
+            intent.putExtra("prescription", prescription);
+            startActivityForResult(intent, EDIT_PRESCRIPTION_REQUEST);
+        });
+
         recyclerView.setAdapter(adapter);
 
-        //loadPrescriptions();
-        loadSamplePrescriptions();
+        loadPrescriptions();
+        //loadSamplePrescriptions();
         return view;
     }
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == EDIT_PRESCRIPTION_REQUEST && resultCode == Activity.RESULT_OK) {
+            loadPrescriptions(); // Refresh the list after edit
+        }
+    }
+
     private void loadPrescriptions() {
-        String url = "https://yourserver.com/get_prescriptions.php?email=" + patientEmail;
+        String url = Constants.GET_Patinet_Prescription + "?email=" + patientEmail;
+        Log.d("Medication patient", patientEmail);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
         StringRequest request = new StringRequest(Request.Method.GET, url,
                 response -> {
                     try {
-                        JSONArray array = new JSONArray(response);
-                        prescriptionList.clear();
-                        for (int i = 0; i < array.length(); i++) {
-                            JSONObject obj = array.getJSONObject(i);
-                            Prescription p = new Prescription(
-                                    obj.getString("id"),
-                                    obj.getString("patient_id"),
-                                    obj.getString("title"),
-                                    obj.getString("description"),
-                                    obj.getString("hour"),
-                                    obj.getString("minute"),
-                                    obj.getString("createdat")
-                            );
-                            prescriptionList.add(p);
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean error = jsonObject.getBoolean("error");
+
+                        if (!error) {
+                            JSONArray array = jsonObject.getJSONArray("prescriptions");
+                            prescriptionList.clear();
+
+                            if (array.length() == 0) {
+                                Toast.makeText(getContext(), "No prescription record found", Toast.LENGTH_SHORT).show();
+                            } else {
+                                for (int i = 0; i < array.length(); i++) {
+                                    JSONObject obj = array.getJSONObject(i);
+                                    Prescription p = new Prescription(
+                                            obj.getString("id"),
+                                            obj.getString("patient_email"),
+                                            obj.getString("title"),
+                                            obj.getString("description"),
+                                            obj.getString("hour"),
+                                            obj.getString("minute"),
+                                            obj.getString("created_at")
+                                    );
+                                    prescriptionList.add(p);
+                                }
+                            }
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(getContext(), "Error fetching prescriptions", Toast.LENGTH_SHORT).show();
                         }
-                        adapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         e.printStackTrace();
+                        Toast.makeText(getContext(), "Parsing error", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(getContext(), "Failed to load", Toast.LENGTH_SHORT).show()
+                error -> Toast.makeText(getContext(), "Failed to load prescriptions", Toast.LENGTH_SHORT).show()
         );
 
         queue.add(request);
     }
+
 
     private void loadSamplePrescriptions() {
         prescriptionList.clear();

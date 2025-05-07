@@ -14,6 +14,7 @@ public class MedItem {
     }
 
     public String getEmail() {
+
         return email;
     }
 }

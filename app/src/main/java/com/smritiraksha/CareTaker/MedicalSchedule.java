@@ -46,7 +46,8 @@ public class MedicalSchedule extends AppCompatActivity {
         dosage = findViewById(R.id.dosage);
         timePicker = findViewById(R.id.time_picker);
         setReminderButton = findViewById(R.id.set_reminder_button);
-        Pemial=getIntent().getStringExtra("Patient_Email");
+
+        Pemial=getIntent().getStringExtra("Patient_EMail");
         Ctemail=getIntent().getStringExtra("GuideMail");
 
         setReminderButton.setOnClickListener(v -> submitMedicationReminder(v));

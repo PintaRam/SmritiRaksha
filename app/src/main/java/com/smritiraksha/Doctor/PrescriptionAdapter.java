@@ -1,11 +1,9 @@
 package com.smritiraksha.Doctor;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,12 +16,18 @@ import java.util.List;
 
 public class PrescriptionAdapter extends RecyclerView.Adapter<PrescriptionAdapter.PrescriptionViewHolder> {
 
+    public interface OnEditClickListener {
+        void onEditClick(Prescription prescription);
+    }
+
     private Context context;
     private List<Prescription> prescriptionList;
+    private OnEditClickListener editClickListener;
 
-    public PrescriptionAdapter(Context context, List<Prescription> prescriptionList) {
+    public PrescriptionAdapter(Context context, List<Prescription> prescriptionList, OnEditClickListener listener) {
         this.context = context;
         this.prescriptionList = prescriptionList;
+        this.editClickListener = listener;
     }
 
     @NonNull
@@ -37,15 +41,14 @@ public class PrescriptionAdapter extends RecyclerView.Adapter<PrescriptionAdapte
     public void onBindViewHolder(@NonNull PrescriptionViewHolder holder, int position) {
         Prescription prescription = prescriptionList.get(position);
 
-        holder.title.setText("Title: " + prescription.getTitle());
+        holder.title.setText(prescription.getTitle());
         holder.description.setText("Description: " + prescription.getDescription());
         holder.time.setText("Time: " + prescription.getHour() + ":" + prescription.getMinute());
 
         holder.editBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(context.getApplicationContext(), EditPrescriptionActivity.class);
-            // Passing Prescription object to EditPrescriptionActivity
-            intent.putExtra("prescription", prescription);
-            context.startActivity(intent);
+            if (editClickListener != null) {
+                editClickListener.onEditClick(prescription);
+            }
         });
     }
 

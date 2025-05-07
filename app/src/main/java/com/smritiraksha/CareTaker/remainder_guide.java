@@ -175,6 +175,7 @@ public class remainder_guide extends Fragment {
                 Intent intent = new Intent(getContext(), MedicalSchedule.class);
                 intent.putExtra("med_id", item.getId());
                 intent.putExtra("Patient_EMail", item.getEmail());
+                Log.d("Debug PEmail",item.getEmail());
                 intent.putExtra("GuideMail",GuideMail);
                 startActivity(intent);
             }

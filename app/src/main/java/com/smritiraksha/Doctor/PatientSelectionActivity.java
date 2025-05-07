@@ -2,6 +2,7 @@ package com.smritiraksha.Doctor;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -55,6 +56,10 @@ public class PatientSelectionActivity extends AppCompatActivity {
                     Intent intent = new Intent(PatientSelectionActivity.this, DoctorDashboard.class);
                     intent.putExtra("patient_id", patient.getId());
                     intent.putExtra("patient_name", patient.getName());
+                    intent.putExtra("doemail",getIntent().getStringExtra("DocEmail"));
+                    Log.d("IntentDebug", "Selected Patient ID: " + patient.getId());
+                    Log.d("IntentDebug", "Selected Patient Name: " + patient.getName());
+                    Log.d("IntentDebug", "Doctor Email from Intent: " + getIntent().getStringExtra("DocEmail"));
                     startActivity(intent);
                     finish(); // Close this activity
                     break;
