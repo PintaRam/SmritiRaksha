@@ -46,6 +46,8 @@ public class MedicalReminderFragment extends Fragment {
     private TextView tvReminderMessage;
     private TextToSpeech textToSpeech;
 
+    private String patientEmail;
+
     private Handler handler = new Handler();
 
     // Current Lottie file and message
@@ -54,31 +56,17 @@ public class MedicalReminderFragment extends Fragment {
 
     private List<Prescription> prescriptions = new ArrayList<>();
 
-    private void fetchPrescriptionsFromServer() {
-        String patientId = "PATIENT123"; // Or get dynamically from logged-in user
-        String url = "https://yourserver.com/get_prescriptions.php?patient_id=" + patientId;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                response -> {
-                    prescriptions.clear();
-                    for (int i = 0; i < response.length(); i++) {
-                        try {
-                            JSONObject obj = response.getJSONObject(i);
-                            prescriptions.add(new Prescription(
-                                    obj.getInt("hour"),
-                                    obj.getInt("minute"),
-                                    obj.getString("title"),
-                                    obj.getString("description")
-                            ));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                error -> Log.e("PrescriptionFetch", "Error: " + error.toString())
-        );
-
-        Volley.newRequestQueue(getContext()).add(jsonArrayRequest);
+        // Retrieve patientEmail from arguments
+        if (getArguments() != null) {
+            patientEmail = getArguments().getString("patient_email", "");
+            Log.d("MedicalReminder", "Received patient email: " + patientEmail);
+        } else {
+            Log.e("MedicalReminder", "No patient email received");
+        }
     }
 
     @Nullable
@@ -103,14 +91,13 @@ public class MedicalReminderFragment extends Fragment {
         // Start checking for notifications
         startNotificationChecker();
 
-        //project to prescription page
         Button btnViewPrescription = view.findViewById(R.id.btnViewPrescription);
-        btnViewPrescription.setOnClickListener(v -> {requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, new ViewPrescriptionFragment()) // Replace with your container ID
-                .addToBackStack(null)
-                .commit();
+        btnViewPrescription.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), MedicationActivity.class);
+            intent.putExtra("patientEmail", patientEmail);
+            startActivity(intent);
         });
+
 
         return view;
     }

@@ -53,6 +53,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -325,6 +326,7 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
         };
     }
 
+
     private void getRouteFromGoogleAPI(String source, String destination) {
         try {
             String originEncoded = URLEncoder.encode(source, "UTF-8");
@@ -355,17 +357,48 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
                             String points = overviewPolyline.getString("points");
 
                             List<LatLng> decodedPath = decodePoly(points);
+
+                            // Clear existing polylines and markers
+                            for (Polyline polyline : polylines) {
+                                polyline.remove();
+                            }
+                            polylines.clear();
+                            googleMap.clear();
+
+                            // Add new polyline
                             PolylineOptions polylineOptions = new PolylineOptions()
                                     .addAll(decodedPath)
                                     .color(Color.BLUE)
                                     .width(12);
+                            Polyline polyline = googleMap.addPolyline(polylineOptions);
+                            polylines.add(polyline);
 
-                            googleMap.addPolyline(polylineOptions);
+                            // Add start and end markers
+                            LatLng startPoint = decodedPath.get(0);
+                            LatLng endPoint = decodedPath.get(decodedPath.size() - 1);
+
+                            googleMap.addMarker(new MarkerOptions()
+                                    .position(startPoint)
+                                    .title("Start"));
+
+                            googleMap.addMarker(new MarkerOptions()
+                                    .position(endPoint)
+                                    .title("Destination"));
+
+                            // Zoom map to fit route
+                            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                            for (LatLng point : decodedPath) {
+                                builder.include(point);
+                            }
+                            LatLngBounds bounds = builder.build();
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 150));
+
                         } else {
                             Toast.makeText(getContext(), "No route found", Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Toast.makeText(getContext(), "Error parsing route", Toast.LENGTH_SHORT).show();
                     }
                 },
                 error -> {
@@ -375,6 +408,7 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback, Ro
 
         queue.add(request);
     }
+
     private List<LatLng> decodePoly(String encoded) {
         List<LatLng> poly = new ArrayList<>();
         int index = 0, len = encoded.length();

@@ -12,7 +12,6 @@
     <uses-permission android:name="android.permission.BODY_SENSORS" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -23,6 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmritiRaksha"
         tools:targetApi="31">
+        <activity
+            android:name=".Patient.MedicationActivity"
+            android:exported="false" />
         <activity
             android:name=".Doctor.PatientSelectionActivity"
             android:exported="false" />
@@ -97,7 +99,6 @@
         <activity
             android:name=".Patient.Games.sudoku"
             android:exported="false" />
-
         <activity
             android:name=".Splash"
             android:exported="true">

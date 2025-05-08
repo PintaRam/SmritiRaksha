@@ -72,7 +72,11 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.nav_tracking) {
                 loadFragment(new TrackingFragment());
             } else if (item.getItemId() == R.id.nav_reminder) {
-                loadFragment(new MedicalReminderFragment());
+                MedicalReminderFragment reminderFragment = new MedicalReminderFragment();
+                Bundle args = new Bundle();
+                args.putString("patient_email", email);  // send the patient email
+                reminderFragment.setArguments(args);
+                loadFragment(reminderFragment);
             } else if (item.getItemId() == R.id.nav_emergency) {
                 loadFragment(new EmergencyFragment());
             }
@@ -265,6 +269,21 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             Log.e(TAG, "Missing or Invalid Key: " + key, e);
             return "";
+        }
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null && intent.hasExtra("fragmentToLoad")) {
+            String tag = intent.getStringExtra("fragmentToLoad");
+            if ("MedicalReminderFragment".equals(tag)) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new MedicalReminderFragment())
+                        .commit();
+            }
         }
     }
 }
